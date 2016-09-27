@@ -3,6 +3,7 @@ package subaraki.petbuddy.capability;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.items.IItemHandler;
 
 public class PetInventory {
 
@@ -27,13 +28,11 @@ public class PetInventory {
 	/*
 	 * Internal method used by IStorage in the capability
 	 */
-	public PetStackHandler getPetInventory(){
-		return canAccesStorage() ? inventory : null;
-	}
+	public IItemHandler getInventoryHandler(){return inventory;}
 
 	public NBTBase writeData(){
 		//hook into the tagcompound of the ItemStackHandler
-		NBTTagCompound tag = getPetInventory().serializeNBT();
+		NBTTagCompound tag = inventory.serializeNBT();
 		//add our own tags
 		tag.setBoolean("chest", holdsChest);
 		//save mix of itemstacks and personal tags
@@ -41,7 +40,7 @@ public class PetInventory {
 	}
 	
 	public void readData(NBTBase nbt){
-		getPetInventory().deserializeNBT((NBTTagCompound)nbt);
+		inventory.deserializeNBT((NBTTagCompound)nbt);
 		holdsChest = ((NBTTagCompound)nbt).getBoolean("chest");
 	}
 	
@@ -52,4 +51,5 @@ public class PetInventory {
 	public boolean canAccesStorage(){
 		return holdsChest;
 	}
+	
 }

@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
-import subaraki.petbuddy.capability.CapabilityInventoryProvider;
+import subaraki.petbuddy.capability.CapabilityProviderPetBuddy;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.entity.PetBuddyRegistry;
@@ -23,20 +23,17 @@ public class PlayerTracker {
 
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event){
-		if(!event.player.worldObj.isRemote)
-			PetBuddyRegistry.onLogin(event.player);
+		PetBuddyRegistry.onLogin(event.player);
 	}
 
 	@SubscribeEvent
 	public void onPlayerLoggedOut(PlayerLoggedOutEvent event){
-		if(!event.player.worldObj.isRemote)
-			PetBuddyRegistry.onLoggedOut(event.player);
+		PetBuddyRegistry.onLoggedOut(event.player);
 	}
 
 	@SubscribeEvent
 	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event){
-		if(!event.player.worldObj.isRemote)
-			PetBuddyRegistry.onPlayerChangedDimension(event.player);
+		PetBuddyRegistry.onPlayerChangedDimension(event.player);
 	}
 
 	@SubscribeEvent
@@ -53,6 +50,6 @@ public class PlayerTracker {
 		final Entity entity = event.getEntity();
 
 		if (entity instanceof EntityPlayer)
-			event.addCapability(CapabilityInventoryProvider.KEY, new CapabilityInventoryProvider((EntityPlayer)entity)); 
+			event.addCapability(CapabilityProviderPetBuddy.KEY, new CapabilityProviderPetBuddy((EntityPlayer)entity)); 
 	}
 }

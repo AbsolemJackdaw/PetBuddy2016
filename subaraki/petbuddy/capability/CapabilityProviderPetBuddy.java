@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import subaraki.petbuddy.mod.PetBuddy;
 
-public class CapabilityInventoryProvider implements ICapabilitySerializable<NBTTagCompound>
+public class CapabilityProviderPetBuddy implements ICapabilitySerializable<NBTTagCompound>
 {
     /**
      * Unique key to identify the attached provider from others
@@ -23,7 +23,7 @@ public class CapabilityInventoryProvider implements ICapabilitySerializable<NBTT
     final PetInventory pet_inventory = new PetInventory();
 
     /**gets called before world is initiated. player.worldObj will return null here !*/
-    public CapabilityInventoryProvider(EntityPlayer player){
+    public CapabilityProviderPetBuddy(EntityPlayer player){
         pet_inventory.setPlayer(player);
     }
 

@@ -41,13 +41,11 @@ public class PetInventoryCapability {
 
 		@Override
 		public NBTBase writeNBT(Capability<PetInventory> capability, PetInventory instance, EnumFacing side)		{
-			//return instance.getTheRpgInventory().serializeNBT();
 			return instance.writeData();
 		}
 
 		@Override
 		public void readNBT(Capability<PetInventory> capability, PetInventory instance, EnumFacing side, NBTBase nbt){
-//			instance.getTheRpgInventory().deserializeNBT((NBTTagCompound)nbt);
 			instance.readData(nbt);
 		}
 	}
