@@ -5,29 +5,64 @@ import java.util.UUID;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
+import subaraki.petbuddy.capability.PetInventory;
+import subaraki.petbuddy.capability.PetInventoryCapability;
+import subaraki.petbuddy.hooks.RespawnBuddy;
 
 public class PetBuddyRegistry {
 
 	private static HashMap<UUID, Integer> buddyRegistry = new HashMap();
 
+	public static EntityPetBuddy getBuddyFromPlayer(EntityPlayer player){
+		EntityPetBuddy pet = null;
+
+		if(buddyRegistry.containsKey(player.getUniqueID())){
+			Integer id = buddyRegistry.get(player.getUniqueID());
+			if(id != null){
+				Entity e = player.worldObj.getEntityByID(id);
+				if(e instanceof EntityPetBuddy)
+					pet = (EntityPetBuddy)e;
+			}
+		}
+
+		return pet;
+	}
+
+	public static void onBuddyDeath(EntityPlayer player){
+		if(buddyRegistry.containsKey(player.getUniqueID())){
+			player.getCooldownTracker().setCooldown(RespawnBuddy.coolDown, 10+player.worldObj.rand.nextInt(10));
+			buddyRegistry.put(player.getUniqueID(), (Integer)null);
+		}
+	}
+
 	public static void onLogin(EntityPlayer player){
 		//when logging in, the player is new to the world.
 		//make a new pet, spawn it, and add it to the map, bound to the player.
 
-		//		EntityWolf wolf = new EntityWolf(player.worldObj);
-		//		wolf.setOwnerId(player.getUniqueID());
-		//		wolf.setLocationAndAngles(player.posX, player.posY, player.posZ, player.getRotationYawHead(), player.rotationPitch);
-		//		wolf.setCustomNameTag(player.getName());
-		//		wolf.setTamed(true);
-		//		if(!player.worldObj.isRemote)
-		//			player.worldObj.spawnEntityInWorld(wolf);
+		if(buddyRegistry.containsKey(player.getUniqueID()))
+			if(buddyRegistry.get(player.getUniqueID())!=null)
+				if(player.worldObj.getEntityByID(buddyRegistry.get(player.getUniqueID())) != null)
+					if(player.worldObj.getEntityByID(buddyRegistry.get(player.getUniqueID())) instanceof EntityPetBuddy)
+						return;
 
 		EntityPetBuddy pet = new EntityPetBuddy(player.worldObj);
+		PetInventory inventory = player.getCapability(PetInventoryCapability.CAPABILITY, null);	
+
 		pet.setOwnerId(player.getUniqueID());
+		pet.setTamed(true);
 		pet.setLocationAndAngles(player.posX, player.posY, player.posZ, player.getRotationYawHead(), player.rotationPitch);
-		pet.setCustomNameTag(player.getName());
+		pet.setItemStackToSlot(EntityEquipmentSlot.HEAD, inventory.getInventoryHandler().getStackInSlot(12));
+		pet.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, inventory.getInventoryHandler().getStackInSlot(13));
+
+		if(inventory.getPetName() != null && inventory.getPetName().length() > 1)
+			pet.setCustomNameTag(inventory.getPetName());
+		else
+			pet.setCustomNameTag(player.getName());
+
 		if(!player.worldObj.isRemote)
 			player.worldObj.spawnEntityInWorld(pet);
 

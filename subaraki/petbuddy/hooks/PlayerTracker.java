@@ -2,9 +2,11 @@ package subaraki.petbuddy.hooks;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.Clone;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerChangedDimensionEvent;
@@ -14,6 +16,9 @@ import subaraki.petbuddy.capability.CapabilityProviderPetBuddy;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.entity.PetBuddyRegistry;
+import subaraki.petbuddy.network.NetworkHandler;
+import subaraki.petbuddy.network.PacketSyncOtherInventory;
+import subaraki.petbuddy.network.PacketSyncOwnInventory;
 
 public class PlayerTracker {
 
@@ -23,6 +28,8 @@ public class PlayerTracker {
 
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event){
+		if (!event.player.worldObj.isRemote)
+			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory((EntityPlayerMP)event.player), (EntityPlayerMP)event.player);
 		PetBuddyRegistry.onLogin(event.player);
 	}
 
@@ -33,7 +40,16 @@ public class PlayerTracker {
 
 	@SubscribeEvent
 	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event){
+		if (!event.player.worldObj.isRemote)
+			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory((EntityPlayerMP)event.player), (EntityPlayerMP)event.player);
+
 		PetBuddyRegistry.onPlayerChangedDimension(event.player);
+	}
+
+	@SubscribeEvent
+	public void incomingPlayer(PlayerEvent.StartTracking e){
+		if(e.getTarget() instanceof EntityPlayer && e.getEntityPlayer() != null)
+			NetworkHandler.NETWORK.sendTo(new PacketSyncOtherInventory((EntityPlayer) e.getTarget()), (EntityPlayerMP) e.getEntityPlayer());
 	}
 
 	@SubscribeEvent

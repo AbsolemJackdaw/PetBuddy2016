@@ -1,13 +1,17 @@
 package subaraki.petbuddy.mod;
 
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.gui.GuiHandler;
 import subaraki.petbuddy.hooks.PlayerTracker;
+import subaraki.petbuddy.hooks.RespawnBuddy;
+import subaraki.petbuddy.network.NetworkHandler;
 import subaraki.petbuddy.proxy.ServerProxy;
 
 @Mod(modid = PetBuddy.MODID, name = PetBuddy.NAME, version = PetBuddy.VERSION, dependencies = PetBuddy.DEPENDENCY)
@@ -26,10 +30,15 @@ public class PetBuddy {
 
 	public static PetBuddy instance;
 	
+	public static Item coolDownItem;
+	
 	@EventHandler
 	public void preinit(FMLPreInitializationEvent event){
 		
 		instance = this;
+		
+		coolDownItem = new Item().setUnlocalizedName(MODID+".cooldownstubforbuddydeath").setRegistryName("cooldownstubforbuddydeath");
+		GameRegistry.register(coolDownItem);
 		
 		proxy.registerEntities();
 		proxy.registerRenders();
@@ -37,5 +46,7 @@ public class PetBuddy {
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		new PetInventoryCapability().register();
 		new PlayerTracker();
+		new RespawnBuddy();
+		new NetworkHandler();
 	}
 }

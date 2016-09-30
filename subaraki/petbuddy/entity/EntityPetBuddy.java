@@ -1,18 +1,9 @@
 package subaraki.petbuddy.entity;
 
-import java.util.UUID;
-
-import javax.annotation.Nullable;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.EntityAIAttackMelee;
@@ -20,79 +11,165 @@ import net.minecraft.entity.ai.EntityAIFollowOwner;
 import net.minecraft.entity.ai.EntityAIHurtByTarget;
 import net.minecraft.entity.ai.EntityAILeapAtTarget;
 import net.minecraft.entity.ai.EntityAILookIdle;
-import net.minecraft.entity.ai.EntityAINearestAttackableTarget;
 import net.minecraft.entity.ai.EntityAIOwnerHurtByTarget;
 import net.minecraft.entity.ai.EntityAIOwnerHurtTarget;
 import net.minecraft.entity.ai.EntityAISwimming;
 import net.minecraft.entity.ai.EntityAIWander;
 import net.minecraft.entity.ai.EntityAIWatchClosest;
-import net.minecraft.entity.monster.IMob;
+import net.minecraft.entity.monster.EntityCreeper;
+import net.minecraft.entity.monster.EntityGhast;
+import net.minecraft.entity.passive.EntityHorse;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemSword;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StringUtils;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 import subaraki.petbuddy.capability.PetInventoryCapability;
+import subaraki.petbuddy.entity.PetForm.EnumPetform;
 import subaraki.petbuddy.mod.PetBuddy;
 
 public class EntityPetBuddy extends EntityTameable {
 
 	private EntityPlayer owner;
-	boolean invulnerable = false;
+
+	private EntityAIAttackMelee AIAttack = new EntityAIAttackMelee(this, 0.3F, true);
+	private EntityAIOwnerHurtByTarget AIOwnerHurt = new EntityAIOwnerHurtByTarget(this);
+	private EntityAIOwnerHurtTarget AIOwnerCommands = new EntityAIOwnerHurtTarget(this);
+	private EntityAIHurtByTarget AIHurtBy = new EntityAIHurtByTarget(this, true, new Class[0]);
 
 	public EntityPetBuddy(World world) {
 		super(world);
 		this.setSize(0.5F, 0.7f);
 
 		this.tasks.addTask(1, new EntityAISwimming(this));
-		this.tasks.addTask(2, new EntityAIAttackMelee(this, 0.3F, true));
-		this.tasks.addTask(3, new EntityAIFollowOwner(this, 0.3F, 10.0F, 2.0F));
+		this.tasks.addTask(3, new EntityAIFollowOwner(this, 0.3F, 7.0F, 2.0F));
 		this.tasks.addTask(4, new EntityAIWander(this, 0.3F));
 		this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
 		this.tasks.addTask(6,new EntityAIWatchClosest(this, Entity.class, 5.0F));
 		this.tasks.addTask(7, new EntityAILookIdle(this));
-		this.targetTasks.addTask(1, new EntityAIOwnerHurtByTarget(this));
-		this.targetTasks.addTask(2, new EntityAIOwnerHurtTarget(this));
-		this.targetTasks.addTask(3, new EntityAIHurtByTarget(this, true, new Class[0]));
-		this.targetTasks.addTask(4, new EntityAINearestAttackableTarget(this,EntityLiving.class, 0, true, false, new Predicate<Entity>()
-		{
-			public boolean apply(@Nullable Entity target)
-			{
-				if(target instanceof EntityTameable)
-					if(((EntityTameable)target).getOwner() != null && ((EntityTameable)target).getOwner().equals(getOwner()))
-						return false;
-					else
-						return true;
-				if(target instanceof IMob)
-					return true;
-				if(target instanceof EntityPlayer)
-					return target.equals(owner) ? false : true;
-				return false;
-			}
-		}));
 	}
 
+	/////INITS/////
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
-		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.2);
+		this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(1.2);
+		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(30);
 	}
+
 	@Override
 	protected void entityInit() {
 		super.entityInit();
 	}
+	
+	/////AI AND INVENTORY RELATED//////
+	@Override
+	public EntityAgeable createChild(EntityAgeable ageable) {
+		return null;
+	}
 
+	private void initAttackTasks(){
+		tasks.addTask(2, AIAttack);
+		this.targetTasks.addTask(1, AIOwnerHurt);
+		this.targetTasks.addTask(2, AIHurtBy);
+		this.targetTasks.addTask(3, AIOwnerCommands);
+	}
+
+	private void removeAttackTasks(){
+		tasks.removeTask(AIAttack);
+		this.targetTasks.removeTask(AIOwnerHurt);
+		this.targetTasks.removeTask(AIHurtBy);
+		this.targetTasks.removeTask(AIOwnerCommands);
+	}
+	
+	@Override
+	public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack) {
+		super.setItemStackToSlot(slotIn, stack);
+		switch(slotIn){
+		case MAINHAND:
+			if(stack == null)
+				removeAttackTasks();
+			else
+				initAttackTasks();
+			break;
+		default:break;
+		}
+	}
+	
+	/////ATTACK LOGIC/////
+	@Override
+	public boolean shouldAttackEntity(EntityLivingBase target, EntityLivingBase player) {
+		if (!(target instanceof EntityCreeper) && !(target instanceof EntityGhast)){
+			if (target instanceof EntityPetBuddy){
+				EntityPetBuddy buddy = (EntityPetBuddy)target;
+				if (buddy.getOwner() == player)
+					return false;
+			}
+			return target instanceof EntityPlayer && player instanceof EntityPlayer && !((EntityPlayer)player).canAttackPlayer((EntityPlayer)target) ? false : !(target instanceof EntityHorse) || !((EntityHorse)target).isTame();
+		}
+		else
+			return false;
+	}
+	@Override
+	public boolean attackEntityAsMob(Entity victim) {
+		boolean flag;
+
+		if(this.getHeldItemMainhand()!= null){
+			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), ((ItemSword)(this.getHeldItemMainhand().getItem())).getDamageVsEntity()+ 3.0f); //cannot retrieve attack damage, which is set as 3+material.damage vs entity 
+			if(flag && getMaster() != null){
+				getHeldItemMainhand().damageItem(1, this);
+				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).getInventoryHandler().setStackInSlot(13, getItemStackFromSlot(EntityEquipmentSlot.MAINHAND));
+			}
+			return flag;
+		}
+
+		return victim.attackEntityFrom(DamageSource.causeMobDamage(this), 2);
+	}
+	@Override
+	public boolean attackEntityFrom(DamageSource source, float amount) {
+		if(!worldObj.isRemote)
+			System.out.println("before attack : "+getHealth());
+		//health before attack
+		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0 : getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
+		boolean isattacked = super.attackEntityFrom(source, amount);
+		//health after attack
+		int armorHealth2 = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0 : getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
+
+		if(armorHealth2 < armorHealth)
+			if(getMaster() != null)
+				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).getInventoryHandler().setStackInSlot(12, getItemStackFromSlot(EntityEquipmentSlot.HEAD).copy());
+		if(!worldObj.isRemote)
+			System.out.println("after attack "+getHealth());
+		return isattacked;
+	}
+	@Override
+	protected void damageArmor(float damage) {
+		float theDamage = damage/4f <1f ? 1f : damage/4f;
+		if(getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null){
+			getItemStackFromSlot(EntityEquipmentSlot.HEAD).damageItem((int)theDamage, this);
+
+			if(getItemStackFromSlot(EntityEquipmentSlot.HEAD).stackSize == 0){
+				setItemStackToSlot(EntityEquipmentSlot.HEAD, null);
+			}
+		}
+	}
+	//////////////////////////////////////////////////////////////////////////////////////////////
+	
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
+
 		if(!player.equals(getMaster()))
 			return false;
 
@@ -109,6 +186,15 @@ public class EntityPetBuddy extends EntityTameable {
 			else if (stack.getItem().equals(Items.NAME_TAG)){
 				//naming is handled by tag itself. only here to prevent gui from opening
 				return false;
+			}else if(stack.getItem() instanceof ItemFood){
+				if(getHealth() < getMaxHealth()){
+					heal( ((ItemFood)stack.getItem()).getHealAmount(stack) );
+					stack.stackSize--;
+					if(stack.stackSize==0)stack=null;
+					if(worldObj.isRemote)
+						worldObj.spawnParticle(EnumParticleTypes.HEART,posX,posY + 0.5f,posZ,0,0,0,new int[0]);
+				}
+				return true;
 			}
 
 		if(this.isRiding()){
@@ -131,25 +217,41 @@ public class EntityPetBuddy extends EntityTameable {
 			return true;
 		}
 
-		return super.processInteract(player, hand, stack);
-	}
-
-	private EntityPlayer getMaster(){
-		return getOwner() instanceof EntityPlayer ? (EntityPlayer)getOwner() : null ;
-	}
-
-	public void setInvulnerable(boolean val) {
-		invulnerable = val;
+		return true;
 	}
 
 	@Override
-	public EntityAgeable createChild(EntityAgeable ageable) {
-		return null;
+	public int getTotalArmorValue() {
+		if(getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null){
+			ItemStack helm = getItemStackFromSlot(EntityEquipmentSlot.HEAD);
+			int armorValue = ((ItemArmor)helm.getItem()).damageReduceAmount * 8;
+			return armorValue;
+		}
+		return super.getTotalArmorValue();
+	}
+	
+	@Override
+	public void onLivingUpdate() {
+		super.onLivingUpdate();
+		if(getMaster() == null)
+			setDead();
+	}
+	
+	public void onDeath(DamageSource cause) {
+		super.onDeath(cause);
+		PetBuddyRegistry.onBuddyDeath(getMaster());
 	}
 
 	@Override
-	public boolean attackEntityAsMob(Entity victim) {
-		return victim.attackEntityFrom(DamageSource.causeMobDamage(this), 5);
+	public void setCustomNameTag(String name) {
+		if(getMaster() != null)
+			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setPetName(name);
+		super.setCustomNameTag(name);
+	}
+	
+	@Override
+	protected boolean canDropLoot() {
+		return false;
 	}
 
 	@Override
@@ -169,35 +271,43 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	public boolean isEntityInvulnerable(DamageSource source) {
-		return getHealth() < 0f ? false : true;
+		return false;
 	}
 
-	@Override
-	public void onLivingUpdate() {
-		super.onLivingUpdate();
 
-		if(getMaster() == null)
-			setDead();
+	////////////////////////////////////////////////////////////
+	///////////////PET BUDDY UNIQUE SPECIFICS///////////////////
+	////////////////////////////////////////////////////////////
 
+	private EntityPlayer getMaster(){
+		return getOwner() instanceof EntityPlayer ? (EntityPlayer)getOwner() : null ;
 	}
-	////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////
-	////////////////////////////////////////////////////////////
+	
+	public EnumPetform getForm(){
+		EnumPetform form = EnumPetform.STEVE;
 
-	private void Following() {
-		//		float distanceToMaster = 10.0F;
-		//		if(this.getAttackTarget() == null){
-		//			if (getMaster() != null) {
-		//				distanceToMaster = this.getDistanceToEntity(getMaster());
-		//
-		//				if ((distanceToMaster > 3.0F) && (distanceToMaster < 10.0F)) {
-		//					Path var2 = getNavigator().getPathToEntityLiving(owner);
-		//					this.getNavigator().setPath(var2, this.getAIMoveSpeed()*1.5f);
-		//
-		//				} else {
-		//					this.getNavigator().setPath(null, 0);
-		//				}
-		//			}
-		//		}
+		EntityLivingBase owner = getOwner();
+		if(owner instanceof EntityPlayer){
+			EntityPlayer player = (EntityPlayer)owner;
+			ItemStack stack = player.getCapability(PetInventoryCapability.CAPABILITY,null).getInventoryHandler().getStackInSlot(14);
+			form = PetForm.getFormFromItem(stack);
+		}
+
+		return form;
+	}
+
+	private static final EntitySheep dyePlaceHolder = new EntitySheep(null);
+
+	public ItemStack getStackDefiningForm(){
+		EntityLivingBase owner = getOwner();
+		if(owner instanceof EntityPlayer){
+			EntityPlayer player = (EntityPlayer)owner;
+			return player.getCapability(PetInventoryCapability.CAPABILITY,null).getInventoryHandler().getStackInSlot(14);
+		}
+		return null;
+	}
+	
+	public float[] getColorFromDye(EnumDyeColor dye){
+		return dyePlaceHolder.getDyeRgb(dye);
 	}
 }
