@@ -3,6 +3,7 @@ package subaraki.petbuddy.hooks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -15,7 +16,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import subaraki.petbuddy.capability.CapabilityProviderPetBuddy;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
-import subaraki.petbuddy.entity.PetBuddyRegistry;
+import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.network.NetworkHandler;
 import subaraki.petbuddy.network.PacketSyncOtherInventory;
 import subaraki.petbuddy.network.PacketSyncOwnInventory;
@@ -30,12 +31,12 @@ public class PlayerTracker {
 	public void onPlayerLogin(PlayerLoggedInEvent event){
 		if (!event.player.worldObj.isRemote)
 			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory((EntityPlayerMP)event.player), (EntityPlayerMP)event.player);
-		PetBuddyRegistry.onLogin(event.player);
+
+		StowOrSummonLogic.checkPet(event.player);
 	}
 
 	@SubscribeEvent
 	public void onPlayerLoggedOut(PlayerLoggedOutEvent event){
-		PetBuddyRegistry.onLoggedOut(event.player);
 	}
 
 	@SubscribeEvent
@@ -43,7 +44,7 @@ public class PlayerTracker {
 		if (!event.player.worldObj.isRemote)
 			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory((EntityPlayerMP)event.player), (EntityPlayerMP)event.player);
 
-		PetBuddyRegistry.onPlayerChangedDimension(event.player);
+		StowOrSummonLogic.checkPet(event.player);
 	}
 
 	@SubscribeEvent
@@ -68,4 +69,5 @@ public class PlayerTracker {
 		if (entity instanceof EntityPlayer)
 			event.addCapability(CapabilityProviderPetBuddy.KEY, new CapabilityProviderPetBuddy((EntityPlayer)entity)); 
 	}
+
 }

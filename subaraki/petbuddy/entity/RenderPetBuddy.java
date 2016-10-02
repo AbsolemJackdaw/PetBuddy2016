@@ -7,7 +7,6 @@ import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelSheep1;
 import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.model.ModelSpider;
-import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
@@ -18,10 +17,8 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerVillagerArmor;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
@@ -231,6 +228,8 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 					((ModelBatFix)livingEntityRenderer.getMainModel()).batBody.postRender(0.0625f);
 				if(pet.getForm().equals(EnumPetform.SPIDER) || pet.getForm().equals(EnumPetform.CAVESPIDER))
 					((ModelSpider)livingEntityRenderer.getMainModel()).spiderHead.postRender(0.0625f);
+				if(pet.getForm().equals(EnumPetform.ENDERMAN))
+					((ModelEnderman)livingEntityRenderer.getMainModel()).postRenderArm(0.0625f, EnumHandSide.RIGHT);
 
 				GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);

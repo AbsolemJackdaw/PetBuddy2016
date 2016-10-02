@@ -36,6 +36,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
+import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.entity.PetForm.EnumPetform;
 import subaraki.petbuddy.mod.PetBuddy;
@@ -73,7 +74,7 @@ public class EntityPetBuddy extends EntityTameable {
 	protected void entityInit() {
 		super.entityInit();
 	}
-	
+
 	/////AI AND INVENTORY RELATED//////
 	@Override
 	public EntityAgeable createChild(EntityAgeable ageable) {
@@ -93,7 +94,7 @@ public class EntityPetBuddy extends EntityTameable {
 		this.targetTasks.removeTask(AIHurtBy);
 		this.targetTasks.removeTask(AIOwnerCommands);
 	}
-	
+
 	@Override
 	public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack) {
 		super.setItemStackToSlot(slotIn, stack);
@@ -107,7 +108,7 @@ public class EntityPetBuddy extends EntityTameable {
 		default:break;
 		}
 	}
-	
+
 	/////ATTACK LOGIC/////
 	@Override
 	public boolean shouldAttackEntity(EntityLivingBase target, EntityLivingBase player) {
@@ -166,7 +167,7 @@ public class EntityPetBuddy extends EntityTameable {
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////////////////////////
-	
+
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
 
@@ -229,17 +230,25 @@ public class EntityPetBuddy extends EntityTameable {
 		}
 		return super.getTotalArmorValue();
 	}
-	
+
 	@Override
 	public void onLivingUpdate() {
 		super.onLivingUpdate();
-		if(getMaster() == null)
+
+		if(getMaster() != null){
+			if(!worldObj.isRemote && (PetInventory.get(getMaster()).getPetID() == null || (int)PetInventory.get(getMaster()).getPetID() != getEntityId()))
+				setDead();
+		}
+		else		
 			setDead();
 	}
-	
+
 	public void onDeath(DamageSource cause) {
 		super.onDeath(cause);
-		PetBuddyRegistry.onBuddyDeath(getMaster());
+		if(getMaster() != null){
+			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setCooldown(2500+rand.nextInt(15000));
+			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setPetID((Integer)null);
+		}
 	}
 
 	@Override
@@ -248,7 +257,7 @@ public class EntityPetBuddy extends EntityTameable {
 			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setPetName(name);
 		super.setCustomNameTag(name);
 	}
-	
+
 	@Override
 	protected boolean canDropLoot() {
 		return false;
@@ -256,7 +265,7 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	protected boolean canDespawn() {
-		return false;
+		return this.isRiding() ? false : true; //pet must despawn when too far away
 	}
 
 	@Override
@@ -264,16 +273,15 @@ public class EntityPetBuddy extends EntityTameable {
 		return EnumCreatureAttribute.UNDEFINED;
 	}
 
-	@Override
-	public boolean isAIDisabled() {
-		return false;
-	}
+	//	@Override
+	//	public boolean isAIDisabled() {
+	//		return false;
+	//	}
 
 	@Override
 	public boolean isEntityInvulnerable(DamageSource source) {
 		return false;
 	}
-
 
 	////////////////////////////////////////////////////////////
 	///////////////PET BUDDY UNIQUE SPECIFICS///////////////////
@@ -282,7 +290,7 @@ public class EntityPetBuddy extends EntityTameable {
 	private EntityPlayer getMaster(){
 		return getOwner() instanceof EntityPlayer ? (EntityPlayer)getOwner() : null ;
 	}
-	
+
 	public EnumPetform getForm(){
 		EnumPetform form = EnumPetform.STEVE;
 
@@ -306,7 +314,7 @@ public class EntityPetBuddy extends EntityTameable {
 		}
 		return null;
 	}
-	
+
 	public float[] getColorFromDye(EnumDyeColor dye){
 		return dyePlaceHolder.getDyeRgb(dye);
 	}

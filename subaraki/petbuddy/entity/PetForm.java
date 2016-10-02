@@ -199,6 +199,7 @@ public class PetForm {
 		case BLAZE : return new float[]{8, 2 ,-8};
 		case VILLAGER : return new float[]{-0.5f,6.5f,-6.5f};
 		case CREEPER : return new float[]{4,3f,-10};
+		case ENDERMAN : return new float[]{0, 2, -25};
 		default: return new float[]{7,6,-9};
 		}
 	}

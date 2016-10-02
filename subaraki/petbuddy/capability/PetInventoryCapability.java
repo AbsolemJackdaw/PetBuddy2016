@@ -2,6 +2,7 @@ package subaraki.petbuddy.capability;
 
 import java.util.concurrent.Callable;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.common.capabilities.Capability;

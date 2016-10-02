@@ -9,8 +9,10 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.gui.GuiHandler;
+import subaraki.petbuddy.gui.handler.KeyHandler;
+import subaraki.petbuddy.hooks.PetDeathTracker;
 import subaraki.petbuddy.hooks.PlayerTracker;
-import subaraki.petbuddy.hooks.RespawnBuddy;
+import subaraki.petbuddy.hooks.StowOrSummonLogic;
 import subaraki.petbuddy.network.NetworkHandler;
 import subaraki.petbuddy.proxy.ServerProxy;
 
@@ -30,23 +32,22 @@ public class PetBuddy {
 
 	public static PetBuddy instance;
 	
-	public static Item coolDownItem;
-	
 	@EventHandler
 	public void preinit(FMLPreInitializationEvent event){
 		
 		instance = this;
 		
-		coolDownItem = new Item().setUnlocalizedName(MODID+".cooldownstubforbuddydeath").setRegistryName("cooldownstubforbuddydeath");
-		GameRegistry.register(coolDownItem);
-		
 		proxy.registerEntities();
 		proxy.registerRenders();
+		proxy.registerKey();
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandler());
 		new PetInventoryCapability().register();
+		new StowOrSummonLogic();
 		new PlayerTracker();
-		new RespawnBuddy();
 		new NetworkHandler();
+		new PetDeathTracker();
+		
+		new KeyHandler();
 	}
 }

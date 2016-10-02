@@ -5,7 +5,8 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
-import subaraki.petbuddy.entity.PetBuddyRegistry;
+import subaraki.petbuddy.capability.PetInventory;
+import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.gui.server.ContainerPetChest;
 import subaraki.petbuddy.mod.PetBuddy;
 
@@ -17,7 +18,7 @@ public class GuiPetChest extends GuiContainer {
 	EntityLivingBase petToRender = null;
 	public GuiPetChest(EntityPlayer player) {
 		super(new ContainerPetChest(player));
-		petToRender = PetBuddyRegistry.getBuddyFromPlayer(player);
+		petToRender = PetInventory.get(player).getPet(player);
 	}
 
 	@Override

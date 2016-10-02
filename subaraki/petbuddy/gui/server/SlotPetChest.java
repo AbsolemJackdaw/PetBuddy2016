@@ -9,7 +9,6 @@ import net.minecraft.util.EnumHand;
 import net.minecraftforge.items.SlotItemHandler;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.entity.EntityPetBuddy;
-import subaraki.petbuddy.entity.PetBuddyRegistry;
 
 public class SlotPetChest extends SlotItemHandler{
 	private PetInventory petInventory = null;
@@ -37,9 +36,8 @@ public class SlotPetChest extends SlotItemHandler{
 
 			EntityPetBuddy e = null;
 			if(getPetInventory() != null){
-				EntityPlayer p = getPetInventory().getPlayer();
-				if(PetBuddyRegistry.getBuddyFromPlayer(p)!= null)
-					e = PetBuddyRegistry.getBuddyFromPlayer(p);
+				EntityPlayer player = getPetInventory().getPlayer();
+				e = PetInventory.get(player).getPet(player);
 			}
 			if(e == null)
 				return;
