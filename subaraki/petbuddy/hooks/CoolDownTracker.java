@@ -12,9 +12,9 @@ import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 
-public class PetDeathTracker {
+public class CoolDownTracker {
 
-	public PetDeathTracker() {
+	public CoolDownTracker() {
 		MinecraftForge.EVENT_BUS.register(this);
 	}
 	
