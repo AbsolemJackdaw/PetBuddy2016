@@ -140,8 +140,6 @@ public class EntityPetBuddy extends EntityTameable {
 	}
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		if(!worldObj.isRemote)
-			System.out.println("before attack : "+getHealth());
 		//health before attack
 		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0 : getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
 		boolean isattacked = super.attackEntityFrom(source, amount);
@@ -151,8 +149,6 @@ public class EntityPetBuddy extends EntityTameable {
 		if(armorHealth2 < armorHealth)
 			if(getMaster() != null)
 				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).getInventoryHandler().setStackInSlot(12, getItemStackFromSlot(EntityEquipmentSlot.HEAD).copy());
-		if(!worldObj.isRemote)
-			System.out.println("after attack "+getHealth());
 		return isattacked;
 	}
 	@Override
