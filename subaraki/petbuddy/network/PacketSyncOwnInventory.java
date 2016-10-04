@@ -14,22 +14,23 @@ import subaraki.petbuddy.mod.PetBuddy;
 public class PacketSyncOwnInventory implements IMessage {
 
 	public ItemStack stack[] = new ItemStack[3];
-	public int petid;
-	
+	public String petid;
+
 	public PacketSyncOwnInventory() {
 	}
 
 	public PacketSyncOwnInventory(EntityPlayer player) {
 		PetInventory inv = player.getCapability(PetInventoryCapability.CAPABILITY, null);
-		
-		petid = inv.getPetID();
+
+		petid = inv.getPetID() == null ? "null" : Integer.toString(inv.getPetID());
+
 		for(int i = 0; i < stack.length; i ++)
 			stack[i] = inv.getInventoryHandler().getStackInSlot(12+i);
 	}
 
 	@Override
 	public void fromBytes(ByteBuf buf) {
-		petid = buf.readInt();
+		petid = ByteBufUtils.readUTF8String(buf);
 		for (int i = 0; i < stack.length; i++){
 			stack[i] = ByteBufUtils.readItemStack(buf);
 		}
@@ -37,7 +38,7 @@ public class PacketSyncOwnInventory implements IMessage {
 
 	@Override
 	public void toBytes(ByteBuf buf) {
-		buf.writeInt(petid);
+		ByteBufUtils.writeUTF8String(buf, petid);
 		for (int i = 0; i < stack.length; i++) {
 			ByteBufUtils.writeItemStack(buf, stack[i]);
 		}
@@ -51,11 +52,15 @@ public class PacketSyncOwnInventory implements IMessage {
 
 			if(player == null)
 				return null;
-			
+
 			PetInventory inv = player.getCapability(PetInventoryCapability.CAPABILITY, null);
 
-			inv.setPetID(message.petid);
-			
+			String id = message.petid;
+			if(id.equals("null"))
+				inv.setPetID(null);
+			else
+				inv.setPetID(Integer.parseInt(id));
+
 			for (int i = 0; i < message.stack.length; i++){
 				inv.getInventoryHandler().setStackInSlot(12+i,message.stack[i]);
 			}
