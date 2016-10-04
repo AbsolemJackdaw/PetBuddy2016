@@ -10,6 +10,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import subaraki.petbuddy.capability.PetInventory;
+import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.hooks.StowOrSummonLogic;
 import subaraki.petbuddy.mod.PetBuddy;
 
@@ -51,8 +52,10 @@ public class PacketStowOrSummonPet implements IMessage{
 				}
 			else
 				//stow pet
-				if(world.getEntityByID(petid) != null){
-					world.getEntityByID(petid).setDead();
+				if(world.getEntityByID(petid) != null && world.getEntityByID(petid) instanceof EntityPetBuddy){
+					EntityPetBuddy pet = (EntityPetBuddy) world.getEntityByID(petid);
+					inventory.setPetHealth(pet.getHealth());
+					pet.setDead();
 					inventory.setPetID((Integer)null);
 					player_mp.addChatComponentMessage(new TextComponentString(TextFormatting.GREEN+"Stowed "+inventory.getPetName()));
 				}else{

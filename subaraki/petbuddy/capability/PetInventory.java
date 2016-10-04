@@ -13,6 +13,8 @@ public class PetInventory {
 	private String petname = null;
 	private Integer currentPetID;
 	private int cooldown = 0;
+	
+	private float petHealth = 30f; //defaults to 30 if no health is saved
 
 	private boolean holdsChest = false;
 
@@ -51,6 +53,7 @@ public class PetInventory {
 		if(getPetID() != null)
 			tag.setInteger("petid", getPetID());
 		tag.setInteger("cooldown", getCooldown());
+		tag.setFloat("pethealth", getPetHealth());
 		//save mix of itemstacks and personal tags
 		return tag;
 	}
@@ -62,6 +65,7 @@ public class PetInventory {
 		setPetName(tag.getString("petname"));
 		setPetID(tag.hasKey("petid") ? tag.getInteger("petid") : null);
 		setCooldown(tag.getInteger("cooldown"));
+		setPetHealth(tag.getFloat("pethealth"));
 	}
 
 	/////////////////Getters and Setters////////////////////////////////////////////////////////////////////////
@@ -112,5 +116,13 @@ public class PetInventory {
 
 	public void setCooldown(int cooldown) {
 		this.cooldown = cooldown;
+	}
+	
+	public float getPetHealth() {
+		return petHealth;
+	}
+	
+	public void setPetHealth(float petHealth) {
+		this.petHealth = petHealth;
 	}
 }

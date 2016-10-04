@@ -57,6 +57,8 @@ public class StowOrSummonLogic {
 
 		inventory.setPetID(pet.getEntityId());
 
+		pet.setHealth(inventory.getPetHealth()); //should default to 30 if no health is saved
+
 		if(!player.worldObj.isRemote)//sync up entity id data
 			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory(player), (EntityPlayerMP)player);
 
