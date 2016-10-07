@@ -13,7 +13,7 @@ public class PetInventory {
 	private String petname = null;
 	private Integer currentPetID;
 	private int cooldown = 0;
-	
+
 	private float petHealth = 30f; //defaults to 30 if no health is saved
 
 	private boolean holdsChest = false;
@@ -49,7 +49,8 @@ public class PetInventory {
 		NBTTagCompound tag = inventory.serializeNBT();
 		//add our own tags
 		tag.setBoolean("chest", canAccesStorage());
-		tag.setString("petname", getPetName());
+		if(getPetName() != null && getPetName().length() > 0)
+			tag.setString("petname", getPetName());
 		if(getPetID() != null)
 			tag.setInteger("petid", getPetID());
 		tag.setInteger("cooldown", getCooldown());
@@ -62,7 +63,8 @@ public class PetInventory {
 		NBTTagCompound tag = ((NBTTagCompound)nbt);
 		inventory.deserializeNBT((NBTTagCompound)nbt);
 		holdsChest = tag.getBoolean("chest");
-		setPetName(tag.getString("petname"));
+		if(tag.hasKey("petname"))
+			setPetName(tag.getString("petname"));
 		setPetID(tag.hasKey("petid") ? tag.getInteger("petid") : null);
 		setCooldown(tag.getInteger("cooldown"));
 		setPetHealth(tag.getFloat("pethealth"));
@@ -117,11 +119,11 @@ public class PetInventory {
 	public void setCooldown(int cooldown) {
 		this.cooldown = cooldown;
 	}
-	
+
 	public float getPetHealth() {
 		return petHealth;
 	}
-	
+
 	public void setPetHealth(float petHealth) {
 		this.petHealth = petHealth;
 	}
