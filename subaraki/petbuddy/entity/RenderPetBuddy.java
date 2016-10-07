@@ -1,5 +1,7 @@
 package subaraki.petbuddy.entity;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelEnderman;
@@ -19,11 +21,13 @@ import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import subaraki.petbuddy.entity.PetForm.EnumPetform;
 import subaraki.petbuddy.entity.model.ModelBatFix;
@@ -86,7 +90,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 	@Override
 	protected void renderEntityName(EntityPetBuddy entityIn, double x, double y, double z, String name,
 			double p_188296_9_) {
-		String format = entityIn.getHealth() > entityIn.getMaxHealth()*(2f/3f) ? "§2" : entityIn.getHealth() > entityIn.getMaxHealth()*(1f/3f) ? "§6" : "§4";
+		String format = entityIn.getHealth() > entityIn.getMaxHealth()*(2f/3f) ? ChatFormatting.GREEN+"" : entityIn.getHealth() > entityIn.getMaxHealth()*(1f/3f) ? TextFormatting.GOLD+"" : ""+TextFormatting.RED;
 		super.renderEntityName(entityIn, x, y, z, format+name, p_188296_9_);
 	}
 	private void clearLayers(){
