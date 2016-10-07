@@ -1,6 +1,7 @@
 package subaraki.petbuddy.network;
 
 import io.netty.buffer.ByteBuf;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -48,22 +49,24 @@ public class PacketSyncOwnInventory implements IMessage {
 
 		@Override
 		public IMessage onMessage(PacketSyncOwnInventory message,MessageContext ctx) {
-			EntityPlayer player = PetBuddy.proxy.getClientPlayer();
+			Minecraft.getMinecraft().addScheduledTask(() -> {
+				EntityPlayer player = PetBuddy.proxy.getClientPlayer();
 
-			if(player == null)
-				return null;
+				if(player == null)
+					return;
 
-			PetInventory inv = player.getCapability(PetInventoryCapability.CAPABILITY, null);
+				PetInventory inv = player.getCapability(PetInventoryCapability.CAPABILITY, null);
 
-			String id = message.petid;
-			if(id.equals("null"))
-				inv.setPetID(null);
-			else
-				inv.setPetID(Integer.parseInt(id));
+				String id = message.petid;
+				if(id.equals("null"))
+					inv.setPetID(null);
+				else
+					inv.setPetID(Integer.parseInt(id));
 
-			for (int i = 0; i < message.stack.length; i++){
-				inv.getInventoryHandler().setStackInSlot(12+i,message.stack[i]);
-			}
+				for (int i = 0; i < message.stack.length; i++){
+					inv.getInventoryHandler().setStackInSlot(12+i,message.stack[i]);
+				}
+			});
 			return null;
 		}
 	}
