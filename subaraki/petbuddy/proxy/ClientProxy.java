@@ -6,13 +6,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
-import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.client.settings.KeyModifier;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.entity.RenderPetBuddy;
-import subaraki.petbuddy.mod.PetBuddy;
 
 public class ClientProxy extends ServerProxy {
 

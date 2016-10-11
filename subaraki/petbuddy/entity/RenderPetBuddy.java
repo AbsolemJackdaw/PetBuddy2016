@@ -5,9 +5,11 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelEnderman;
+import net.minecraft.client.model.ModelIronGolem;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelSheep1;
 import net.minecraft.client.model.ModelSheep2;
+import net.minecraft.client.model.ModelSnowMan;
 import net.minecraft.client.model.ModelSpider;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.GlStateManager;
@@ -21,7 +23,6 @@ import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer.EnumChatVisibility;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
@@ -43,7 +44,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 
 	@Override
 	protected ResourceLocation getEntityTexture(EntityPetBuddy entity) {
-		return PetForm.getTextureForModel(entity.getForm(), entity);
+		return PetForm.getTextureForModel(entity);
 	}
 
 	@Override
@@ -54,14 +55,14 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 	@Override
 	public void doRender(EntityPetBuddy entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		//should be called only once : when the stack in the inventory is changed 
-		if(!this.mainModel.equals(PetForm.getModelForForm(entity.getForm())) /*if models differ*/||
-				this.mainModel.textureHeight != PetForm.getModelForForm(entity.getForm()).textureHeight &&
-				this.mainModel.textureWidth != PetForm.getModelForForm(entity.getForm()).textureWidth /*if texture dimensions differ*/){
+		if(!this.mainModel.equals(PetForm.getModelForForm(entity)) /*if models differ*/||
+				this.mainModel.textureHeight != PetForm.getModelForForm(entity).textureHeight &&
+				this.mainModel.textureWidth != PetForm.getModelForForm(entity).textureWidth /*if texture dimensions differ*/){
 
 			//clear layers before setting model
 			clearLayers();
 			//Set new model
-			this.mainModel = PetForm.getModelForForm(entity.getForm());
+			this.mainModel = PetForm.getModelForForm(entity);
 			//Set correct layers
 			if(mainModel instanceof ModelSheep2)
 				initSheepLayer();
@@ -71,7 +72,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 			else if (entity.getForm().equals(EnumPetform.MOOSHROOM))
 				initMooshroomLayer();
 
-			if(!(mainModel instanceof ModelBiped) || (mainModel instanceof ModelEnderman))
+			if(!(mainModel instanceof ModelBiped) || (mainModel instanceof ModelEnderman) )
 				addLayer(new RenderHeldItemOther(this));
 
 		}
@@ -234,6 +235,10 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 					((ModelSpider)livingEntityRenderer.getMainModel()).spiderHead.postRender(0.0625f);
 				if(pet.getForm().equals(EnumPetform.ENDERMAN))
 					((ModelEnderman)livingEntityRenderer.getMainModel()).postRenderArm(0.0625f, EnumHandSide.RIGHT);
+				if(pet.getForm().equals(EnumPetform.SNOWMAN))
+					((ModelSnowMan)livingEntityRenderer.getMainModel()).body.postRender(0.0625f);
+				if(pet.getForm().equals(EnumPetform.IRONGOLEM))
+					((ModelIronGolem)livingEntityRenderer.getMainModel()).ironGolemRightArm.postRender(0.0625f);
 
 				GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
@@ -261,9 +266,12 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 			return (float)Math.sin(tentacleAngle+=0.4f * 0.25f)/3f + 0.4f; //lastTentacleAngle + (tentacleAngle - lastTentacleAngle) * partialTicks;
 		}
 
-		else if (livingBase.getForm().equals(EnumPetform.BLAZE) || livingBase.getForm().equals(EnumPetform.GHAST)|| livingBase.getForm().equals(EnumPetform.BAT)){
+		else if (livingBase.getForm().equals(EnumPetform.BLAZE) || livingBase.getForm().equals(EnumPetform.GHAST)|| livingBase.getForm().equals(EnumPetform.BAT)||
+			 livingBase.getForm().equals(EnumPetform.SILVERFISH) || livingBase.getForm().equals(EnumPetform.ENDERMITE)){
 			return tentacleAngle+=0.8f;
 		}
+		else if(livingBase.getForm().equals(EnumPetform.DOGE))
+			return 8f;
 
 		return 0f;
 	}

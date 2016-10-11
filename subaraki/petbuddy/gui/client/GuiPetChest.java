@@ -6,7 +6,6 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
 import subaraki.petbuddy.capability.PetInventory;
-import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.gui.server.ContainerPetChest;
 import subaraki.petbuddy.mod.PetBuddy;
 

@@ -1,12 +1,15 @@
 package subaraki.petbuddy.gui.server;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
+import subaraki.petbuddy.entity.EntityPetBuddy;
+import subaraki.petbuddy.entity.PetForm;
 
 public class ContainerPetChest extends Container{
 
@@ -38,11 +41,6 @@ public class ContainerPetChest extends Container{
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn) {
 		return true;
-	}
-
-	@Override
-	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
-		return super.slotClick(slotId, dragType, clickTypeIn, player);
 	}
 
 	@Override
@@ -78,5 +76,32 @@ public class ContainerPetChest extends Container{
 		}
 
 		return itemstack;
+	}
+
+	@Override
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+
+		ItemStack clicked = super.slotClick(slotId, dragType, clickTypeIn, player);
+		
+		if(slotId == 14){
+			ItemStack stack = getSlot(slotId).getStack();
+			EntityPetBuddy e = PetInventory.get(player).getPet(player);
+			if(e != null && stack != null){
+				if(stack.getItem().equals(Items.RABBIT_FOOT))
+					e.setIndex(PetForm.TEXTURE_RABBIT.length);
+				else if(stack.getItem().equals(Items.ARROW))
+					e.setIndex(PetForm.TEXTURE_SKELETON.length);
+				else if(stack.getItem().equals(Items.ROTTEN_FLESH))
+					e.setIndex(PetForm.TEXTURE_ZOMBIE.length);
+				else if (stack.getItem().equals(Items.BOOK))
+					e.setIndex(PetForm.TEXTURE_VILLAGER.length);
+				else if (stack.getItem().equals(Items.COOKED_FISH))
+					e.setIndex(PetForm.TEXTURE_CATE.length);
+
+				else
+					e.setIndex(0);
+			}
+		}
+		return clicked;
 	}
 }

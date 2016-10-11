@@ -31,6 +31,11 @@ public class SlotPetChest extends SlotItemHandler{
 		}
 
 		@Override
+		public void putStack(ItemStack stack) {
+			super.putStack(stack);
+		}
+
+		@Override
 		public void onSlotChanged() {
 			super.onSlotChanged();
 
@@ -42,20 +47,21 @@ public class SlotPetChest extends SlotItemHandler{
 			if(e == null)
 				return;
 
-			else if (slotId == 12){
+			if (slotId == 12){
 				e.setItemStackToSlot(EntityEquipmentSlot.HEAD, getStack());//stack can be null. is intended
 			}
-			
+
 			if(slotId == 13){
 				e.setHeldItem(EnumHand.MAIN_HAND, getStack());//stack can be null. is intended
 			}
+
 		}
 
 		@Override
 		public int getSlotStackLimit() {
 			return 1;
 		}
-		
+
 		@Override
 		public boolean isItemValid(ItemStack stack) {
 			if (stack == null)return false;

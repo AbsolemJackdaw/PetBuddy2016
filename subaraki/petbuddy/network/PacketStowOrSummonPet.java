@@ -13,7 +13,6 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.hooks.StowOrSummonLogic;
-import subaraki.petbuddy.mod.PetBuddy;
 
 public class PacketStowOrSummonPet implements IMessage{
 

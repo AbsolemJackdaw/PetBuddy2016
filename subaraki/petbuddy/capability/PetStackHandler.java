@@ -13,5 +13,4 @@ public class PetStackHandler extends ItemStackHandler{
 	public ItemStack[] getStacks(){
 		return stacks;
 	}
-	
 }

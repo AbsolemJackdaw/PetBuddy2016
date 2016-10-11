@@ -70,7 +70,7 @@ public class PacketSyncOtherInventory implements IMessage {
 						FMLLog.getLogger().info("packet info. 'inventory' was null. dropping packet");
 					else{
 						for (int i = 0; i < message.stack.length; i++)
-							inv.getInventoryHandler().setStackInSlot(12+i, message.stack[i]);
+							inv.setStackInSlot(12+i, message.stack[i]);
 					}
 				}else
 					FMLLog.getLogger().info("packet info. 'other' was null. dropping packet");

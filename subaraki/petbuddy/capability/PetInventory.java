@@ -1,6 +1,7 @@
 package subaraki.petbuddy.capability;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.items.ItemStackHandler;
@@ -42,6 +43,11 @@ public class PetInventory {
 	 * Internal method used by IStorage in the capability
 	 */
 	public ItemStackHandler getInventoryHandler(){return inventory;}
+
+	/**helper method to sync up the entity form*/
+	public void setStackInSlot(int slotId, ItemStack stack){
+		inventory.setStackInSlot(slotId, stack);
+	}
 
 	///////////////Saving data//////////////////////////////////////////////////////////////////////////
 	public NBTBase writeData(){

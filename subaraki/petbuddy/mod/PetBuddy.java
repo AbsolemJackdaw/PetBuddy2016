@@ -2,14 +2,12 @@ package subaraki.petbuddy.mod;
 
 import java.util.Arrays;
 
-import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.gui.GuiHandler;
 import subaraki.petbuddy.gui.handler.KeyHandler;
@@ -24,7 +22,7 @@ public class PetBuddy {
 
 	public static final String MODID = "petbuddy";
 	public static final String NAME = "Pet Buddy";
-	public static final String VERSION = "1.10.2 v2.2";
+	public static final String VERSION = "1.10.2 v2.2.0.1";
 	public static final String DEPENDENCY = "required-after:subcommonlib";
 
 	private static final String client = "subaraki.petbuddy.proxy.ClientProxy";

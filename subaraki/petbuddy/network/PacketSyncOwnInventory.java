@@ -64,7 +64,7 @@ public class PacketSyncOwnInventory implements IMessage {
 					inv.setPetID(Integer.parseInt(id));
 
 				for (int i = 0; i < message.stack.length; i++){
-					inv.getInventoryHandler().setStackInSlot(12+i,message.stack[i]);
+					inv.setStackInSlot(12+i,message.stack[i]);
 				}
 			});
 			return null;

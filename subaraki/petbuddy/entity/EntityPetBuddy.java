@@ -131,7 +131,7 @@ public class EntityPetBuddy extends EntityTameable {
 			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), ((ItemSword)(this.getHeldItemMainhand().getItem())).getDamageVsEntity()+ 3.0f); //cannot retrieve attack damage, which is set as 3+material.damage vs entity 
 			if(flag && getMaster() != null){
 				getHeldItemMainhand().damageItem(1, this);
-				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).getInventoryHandler().setStackInSlot(13, getItemStackFromSlot(EntityEquipmentSlot.MAINHAND));
+				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setStackInSlot(13, getItemStackFromSlot(EntityEquipmentSlot.MAINHAND));
 			}
 			return flag;
 		}
@@ -148,7 +148,7 @@ public class EntityPetBuddy extends EntityTameable {
 
 		if(armorHealth2 < armorHealth)
 			if(getMaster() != null)
-				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).getInventoryHandler().setStackInSlot(12, getItemStackFromSlot(EntityEquipmentSlot.HEAD).copy());
+				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setStackInSlot(12, getItemStackFromSlot(EntityEquipmentSlot.HEAD).copy());
 		return isattacked;
 	}
 	@Override
@@ -313,5 +313,16 @@ public class EntityPetBuddy extends EntityTameable {
 
 	public float[] getColorFromDye(EnumDyeColor dye){
 		return dyePlaceHolder.getDyeRgb(dye);
+	}
+
+	private int index;
+	public void setIndex(int lenght){
+		if(lenght > 0)
+			index = rand.nextInt(lenght);
+		else
+			index = 0;
+	}
+	public int getTextureIndex(){
+		return index;
 	}
 }
