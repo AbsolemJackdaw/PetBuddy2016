@@ -31,6 +31,9 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.DataSerializers;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
@@ -49,6 +52,9 @@ public class EntityPetBuddy extends EntityTameable {
 	private EntityAIOwnerHurtByTarget AIOwnerHurt = new EntityAIOwnerHurtByTarget(this);
 	private EntityAIOwnerHurtTarget AIOwnerCommands = new EntityAIOwnerHurtTarget(this);
 	private EntityAIHurtByTarget AIHurtBy = new EntityAIHurtByTarget(this, true, new Class[0]);
+
+	protected static final DataParameter<String> SKINNED = EntityDataManager.<String>createKey(EntityPetBuddy.class, DataSerializers.STRING);
+	protected static final DataParameter<Boolean> UPDATE = EntityDataManager.<Boolean>createKey(EntityPetBuddy.class, DataSerializers.BOOLEAN);
 
 	public EntityPetBuddy(World world) {
 		super(world);
@@ -73,6 +79,9 @@ public class EntityPetBuddy extends EntityTameable {
 	@Override
 	protected void entityInit() {
 		super.entityInit();
+		this.dataManager.register(SKINNED, "");
+		this.dataManager.register(UPDATE, false);
+
 	}
 
 	/////AI AND INVENTORY RELATED//////
@@ -181,8 +190,10 @@ public class EntityPetBuddy extends EntityTameable {
 				}
 			}
 			else if (stack.getItem().equals(Items.NAME_TAG)){
-				//naming is handled by tag itself. only here to prevent gui from opening
-				return false;
+				if(stack.hasDisplayName())
+					setCustomNameTag(stack.getDisplayName());
+				//return true so the item does not get consumed. setting the name is done above
+				return true;
 			}else if(stack.getItem() instanceof ItemFood){
 				if(getHealth() < getMaxHealth()){
 					heal( ((ItemFood)stack.getItem()).getHealAmount(stack) );
@@ -237,6 +248,7 @@ public class EntityPetBuddy extends EntityTameable {
 		}
 		else		
 			setDead();
+
 	}
 
 	public void onDeath(DamageSource cause) {
@@ -288,19 +300,8 @@ public class EntityPetBuddy extends EntityTameable {
 	}
 
 	public EnumPetform getForm(){
-		EnumPetform form = EnumPetform.STEVE;
-
-		EntityLivingBase owner = getOwner();
-		if(owner instanceof EntityPlayer){
-			EntityPlayer player = (EntityPlayer)owner;
-			ItemStack stack = player.getCapability(PetInventoryCapability.CAPABILITY,null).getInventoryHandler().getStackInSlot(14);
-			form = PetForm.getFormFromItem(stack);
-		}
-
-		return form;
+		return PetForm.getFormFromItem(getStackDefiningForm());
 	}
-
-	private static final EntitySheep dyePlaceHolder = new EntitySheep(null);
 
 	public ItemStack getStackDefiningForm(){
 		EntityLivingBase owner = getOwner();
@@ -311,6 +312,7 @@ public class EntityPetBuddy extends EntityTameable {
 		return null;
 	}
 
+	private static final EntitySheep dyePlaceHolder = new EntitySheep(null);
 	public float[] getColorFromDye(EnumDyeColor dye){
 		return dyePlaceHolder.getDyeRgb(dye);
 	}
@@ -324,5 +326,29 @@ public class EntityPetBuddy extends EntityTameable {
 	}
 	public int getTextureIndex(){
 		return index;
+	}
+
+	private String modeltype = "default";
+	public String getModelType(){
+		return modeltype;
+	}
+
+	public void setModelType(String type){
+		modeltype = type;
+	}
+
+	public void setNameForNameTag(String s){
+		dataManager.set(SKINNED, s);
+	}
+
+	public String getNameFromTag() {
+		return dataManager.get(SKINNED);
+	}
+
+	public boolean shouldForceRenderUpdate(){
+		return dataManager.get(UPDATE);
+	}
+	public void setForceRender(boolean flag){
+		dataManager.set(UPDATE, flag);
 	}
 }

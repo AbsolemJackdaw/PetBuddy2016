@@ -1,6 +1,15 @@
 package subaraki.petbuddy.entity;
 
+import java.util.Map;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
+import com.mojang.realmsclient.dto.PlayerInfo;
+
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -13,6 +22,7 @@ import net.minecraft.client.model.ModelEnderman;
 import net.minecraft.client.model.ModelGhast;
 import net.minecraft.client.model.ModelIronGolem;
 import net.minecraft.client.model.ModelPig;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelPolarBear;
 import net.minecraft.client.model.ModelSheep2;
 import net.minecraft.client.model.ModelSilverfish;
@@ -22,6 +32,9 @@ import net.minecraft.client.model.ModelSquid;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.model.ModelWitch;
 import net.minecraft.client.model.ModelWolf;
+import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,6 +43,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import subaraki.petbuddy.entity.model.ModelBatFix;
@@ -92,7 +106,7 @@ public class PetForm {
 		public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float p_78086_2_, float p_78086_3_, float partialTickTime) {
 			this.wolfBody.setRotationPoint(0.0F, 14.0F, 2.0F);
 			this.wolfBody.rotateAngleX = ((float)Math.PI / 2F);
-			
+
 			if(this.boxList.size() >= 8){
 				this.boxList.get(2).setRotationPoint(-1.0F, 14.0F, -3.0F);
 				this.boxList.get(2).rotateAngleX = this.wolfBody.rotateAngleX;
@@ -113,7 +127,9 @@ public class PetForm {
 
 	private static final ModelBatFix MODEL_BAT = new ModelBatFix();
 	private static final ModelSkeletonFix MODEL_SKELETON = new ModelSkeletonFix();
-	private static final ModelBiped MODEL_PLAYER = new ModelBiped(0,0,64,64);
+	private static final ModelBiped MODEL_BIPED = new ModelBiped(0,0,64,64);
+	public static final ModelPlayer MODEL_PLAYER_STEVE = new ModelPlayer(0, false);
+	public static final ModelPlayer MODEL_PLAYER_ALEX = new ModelPlayer(0, true);
 	private static final ModelZombieVillagerFix MODEL_VILLAGER_ZOMBIE = new ModelZombieVillagerFix();
 	private static final ModelCow MODEL_COW = new ModelCow();
 	private static final ModelSquid MODEL_SQUID = new ModelSquid();
@@ -154,6 +170,7 @@ public class PetForm {
 	private static final ResourceLocation TEXTURE_SNOW_MAN = new ResourceLocation("textures/entity/snowman.png");
 	private static final ResourceLocation TEXTURE_WITCH = new ResourceLocation("textures/entity/witch.png");
 	private static final ResourceLocation TEXTURE_DOGE = new ResourceLocation("textures/entity/wolf/wolf.png");
+	public static ResourceLocation FRIENDSKIN = DefaultPlayerSkin.getDefaultSkinLegacy();;
 
 	public static final ResourceLocation[] TEXTURE_RABBIT = new ResourceLocation[]{
 			new ResourceLocation("textures/entity/rabbit/brown.png"),
@@ -220,7 +237,8 @@ public class PetForm {
 		SNOWMAN,
 		CATE,
 		WITCH,
-		DOGE
+		DOGE,
+		FRIEND
 	}
 
 	public static ModelBase getModelForForm(EntityPetBuddy entity){
@@ -252,11 +270,14 @@ public class PetForm {
 		case COW:
 		case MOOSHROOM: return MODEL_COW;
 
-		case STEVE:
 		case ZOMBIEPIGMAN:
-			return MODEL_PLAYER;
+			return MODEL_BIPED;
 		case ZOMBIE :
-			return entity.getTextureIndex() >= 6 ? MODEL_PLAYER : MODEL_VILLAGER_ZOMBIE;
+			return entity.getTextureIndex() >= 6 ? MODEL_BIPED : MODEL_VILLAGER_ZOMBIE;
+
+		case STEVE:
+		case FRIEND:
+			return entity.getModelType().equals("default") ? MODEL_PLAYER_STEVE : MODEL_PLAYER_ALEX;
 
 		default:return null;
 		}
@@ -271,9 +292,6 @@ public class PetForm {
 		case COW: return TEXTURE_COW;
 		case PIG: return TEXTURE_PIG;
 		case SHEEP: return TEXTURE_SHEEP;
-		case STEVE: if(entity.getOwner() != null && entity.getOwner() instanceof EntityPlayer)
-			if(((EntityPlayer)entity.getOwner()) instanceof AbstractClientPlayer)
-				return ((AbstractClientPlayer)entity.getOwner()).getLocationSkin();
 		case ZOMBIE: return TEXTURE_ZOMBIE[entity.getTextureIndex()];
 		case SKELETON: return TEXTURE_SKELETON[entity.getTextureIndex()];
 		case SQUID: return TEXTURE_SQUID;
@@ -297,6 +315,13 @@ public class PetForm {
 		case CATE : return TEXTURE_CATE[entity.getTextureIndex()];
 		case WITCH : return TEXTURE_WITCH;
 		case DOGE : return TEXTURE_DOGE;
+
+		case FRIEND :
+			return FRIENDSKIN;
+		case STEVE: 
+			if(entity.getOwner() != null && entity.getOwner() instanceof EntityPlayer)
+				if(((EntityPlayer)entity.getOwner()) instanceof AbstractClientPlayer)
+					return ((AbstractClientPlayer)entity.getOwner()).getLocationSkin();
 
 		default: return null;
 		}
@@ -328,7 +353,7 @@ public class PetForm {
 		case IRONGOLEM : return new float[]{11,4,-25};
 		case CATE : return new float[]{0,-1,-12};
 		case DOGE : return new float[]{4,0,-12};
-		
+
 		default: return new float[]{7,6,-9};
 		}
 	}
@@ -411,6 +436,8 @@ public class PetForm {
 				return EnumPetform.WITCH;
 			else if (item.equals(Items.BONE))
 				return EnumPetform.DOGE;
+			else if (item.equals(Items.NAME_TAG))
+				return EnumPetform.FRIEND;
 		}
 
 		return EnumPetform.STEVE;

@@ -1,11 +1,18 @@
 package subaraki.petbuddy.entity;
 
+import java.util.Map;
+import java.util.UUID;
+
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture;
+import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.realmsclient.gui.ChatFormatting;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelEnderman;
 import net.minecraft.client.model.ModelIronGolem;
+import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelSheep1;
 import net.minecraft.client.model.ModelSheep2;
@@ -22,19 +29,24 @@ import net.minecraft.client.renderer.entity.layers.LayerBipedArmor;
 import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import subaraki.petbuddy.entity.PetForm.EnumPetform;
 import subaraki.petbuddy.entity.model.ModelBatFix;
+import subaraki.petbuddy.network.NetworkHandler;
+import subaraki.petbuddy.network.PacketSyncPetRenderData;
 
 public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRenderFactory{
 	private static final ResourceLocation ZOMBIE_TEXTURES = new ResourceLocation("textures/entity/zombie/zombie.png");
+	private ItemStack previousPetForm = null;
 
 	public RenderPetBuddy(RenderManager renderManager) {
 		super(renderManager, new ModelBiped(0,0,64,64), 0.25f);
@@ -55,12 +67,27 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 	@Override
 	public void doRender(EntityPetBuddy entity, double x, double y, double z, float entityYaw, float partialTicks) {
 		//should be called only once : when the stack in the inventory is changed 
-		if(!this.mainModel.equals(PetForm.getModelForForm(entity)) /*if models differ*/||
-				this.mainModel.textureHeight != PetForm.getModelForForm(entity).textureHeight &&
-				this.mainModel.textureWidth != PetForm.getModelForForm(entity).textureWidth /*if texture dimensions differ*/){
+		boolean force =  entity.shouldForceRenderUpdate();
+		if(!ItemStack.areItemStacksEqual(previousPetForm, entity.getStackDefiningForm()) || force){
 
+			previousPetForm = entity.getStackDefiningForm();
+			entity.setForceRender(false);
+			NetworkHandler.NETWORK.sendToServer(new PacketSyncPetRenderData(false));
+			
+			//Set texture only once
+			if(entity.getNameFromTag().length() > 1){
+				GameProfile profile = TileEntitySkull.updateGameprofile(new GameProfile((UUID)null, entity.getNameFromTag()));
+				Map<Type, MinecraftProfileTexture> map = Minecraft.getMinecraft().getSkinManager().loadSkinFromCache(profile);
+				if (map.containsKey(Type.SKIN)){
+					PetForm.FRIENDSKIN = Minecraft.getMinecraft().getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
+				}
+				else 
+					PetForm.FRIENDSKIN = DefaultPlayerSkin.getDefaultSkinLegacy();
+			}
+			
 			//clear layers before setting model
 			clearLayers();
+
 			//Set new model
 			this.mainModel = PetForm.getModelForForm(entity);
 			//Set correct layers
@@ -267,7 +294,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 		}
 
 		else if (livingBase.getForm().equals(EnumPetform.BLAZE) || livingBase.getForm().equals(EnumPetform.GHAST)|| livingBase.getForm().equals(EnumPetform.BAT)||
-			 livingBase.getForm().equals(EnumPetform.SILVERFISH) || livingBase.getForm().equals(EnumPetform.ENDERMITE)){
+				livingBase.getForm().equals(EnumPetform.SILVERFISH) || livingBase.getForm().equals(EnumPetform.ENDERMITE)){
 			return tentacleAngle+=0.8f;
 		}
 		else if(livingBase.getForm().equals(EnumPetform.DOGE))

@@ -1,9 +1,11 @@
 package subaraki.petbuddy.capability;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 
@@ -14,6 +16,7 @@ public class PetInventory {
 	private String petname = null;
 	private Integer currentPetID;
 	private int cooldown = 0;
+	private String petmodeltype = "default";
 
 	private float petHealth = 30f; //defaults to 30 if no health is saved
 
@@ -61,6 +64,7 @@ public class PetInventory {
 			tag.setInteger("petid", getPetID());
 		tag.setInteger("cooldown", getCooldown());
 		tag.setFloat("pethealth", getPetHealth());
+		tag.setString("type", getPetmodeltype());
 		//save mix of itemstacks and personal tags
 		return tag;
 	}
@@ -74,6 +78,7 @@ public class PetInventory {
 		setPetID(tag.hasKey("petid") ? tag.getInteger("petid") : null);
 		setCooldown(tag.getInteger("cooldown"));
 		setPetHealth(tag.getFloat("pethealth"));
+		setPetmodeltype(tag.getString("type"));
 	}
 
 	/////////////////Getters and Setters////////////////////////////////////////////////////////////////////////
@@ -132,5 +137,13 @@ public class PetInventory {
 
 	public void setPetHealth(float petHealth) {
 		this.petHealth = petHealth;
+	}
+	
+	public void setPetmodeltype(String petmodeltype) {
+		this.petmodeltype = petmodeltype;
+	}
+	
+	public String getPetmodeltype() {
+		return petmodeltype;
 	}
 }

@@ -1,6 +1,7 @@
 package subaraki.petbuddy.gui.server;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
@@ -51,10 +52,15 @@ public class SlotPetChest extends SlotItemHandler{
 				e.setItemStackToSlot(EntityEquipmentSlot.HEAD, getStack());//stack can be null. is intended
 			}
 
-			if(slotId == 13){
+			else if(slotId == 13){
 				e.setHeldItem(EnumHand.MAIN_HAND, getStack());//stack can be null. is intended
 			}
-
+			
+			else if (slotId == 14){
+				String tagName = getStack() != null && getStack().hasDisplayName() && Items.NAME_TAG.equals(getStack().getItem()) ? getStack().getDisplayName() : "";
+				e.setNameForNameTag(tagName);
+				e.setForceRender(true);
+			}
 		}
 
 		@Override

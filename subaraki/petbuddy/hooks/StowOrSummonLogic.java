@@ -3,7 +3,10 @@ package subaraki.petbuddy.hooks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.network.NetworkHandler;
@@ -26,9 +29,9 @@ public class StowOrSummonLogic {
 				if(loadedEntity instanceof EntityPetBuddy){
 					EntityPetBuddy epb = (EntityPetBuddy)loadedEntity;
 					if(epb.getOwnerId() != null && epb.getOwnerId().equals(player.getUniqueID())){
-						if(epb.getEntityId() == (int)inventory.getPetID())//if the entity is the one registered to the player, keep it.
+						if(epb.getEntityId() == (int)inventory.getPetID()){//if the entity is the one registered to the player, keep it.
 							hasPet = true;
-						//don't set pet dead here. it removes itself in his update method.
+						}
 					}
 				}
 			if(!hasPet)//if no pets were found, give the player a new pet
@@ -47,6 +50,13 @@ public class StowOrSummonLogic {
 		pet.setItemStackToSlot(EntityEquipmentSlot.HEAD, inventory.getInventoryHandler().getStackInSlot(12));
 		pet.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, inventory.getInventoryHandler().getStackInSlot(13));
 
+		pet.setModelType(inventory.getPetmodeltype());
+		
+		ItemStack stack = inventory.getInventoryHandler().getStackInSlot(14);
+		String tagName = stack != null && stack.hasDisplayName() && Items.NAME_TAG.equals(stack.getItem()) ? stack.getDisplayName() : "";
+		pet.setNameForNameTag(tagName);
+		pet.setForceRender(true);
+
 		if(inventory.getPetName() != null && inventory.getPetName().length() > 1)
 			pet.setCustomNameTag(inventory.getPetName());
 		else
@@ -56,10 +66,11 @@ public class StowOrSummonLogic {
 
 		pet.setHealth(inventory.getPetHealth() > 0 ? inventory.getPetHealth() : pet.getMaxHealth()); //should default to 30 if no health is saved
 
+		if(!player.worldObj.isRemote)
+			player.worldObj.spawnEntityInWorld(pet);
+
 		if(!player.worldObj.isRemote)//sync up entity id data
 			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory(player), (EntityPlayerMP)player);
 
-		if(!player.worldObj.isRemote)
-			player.worldObj.spawnEntityInWorld(pet);
 	}
 }

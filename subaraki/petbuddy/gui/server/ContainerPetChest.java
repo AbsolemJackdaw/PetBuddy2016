@@ -97,9 +97,10 @@ public class ContainerPetChest extends Container{
 					e.setIndex(PetForm.TEXTURE_VILLAGER.length);
 				else if (stack.getItem().equals(Items.COOKED_FISH))
 					e.setIndex(PetForm.TEXTURE_CATE.length);
-
-				else
+					
+				else{
 					e.setIndex(0);
+				}
 			}
 		}
 		return clicked;
