@@ -71,6 +71,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 		if(!ItemStack.areItemStacksEqual(previousPetForm, entity.getStackDefiningForm()) || force){
 
 			previousPetForm = entity.getStackDefiningForm();
+			//gui rendering client side only fix. packet never gets processed correctly because it is client side only
 			entity.setForceRender(false);
 			NetworkHandler.NETWORK.sendToServer(new PacketSyncPetRenderData(false));
 			
