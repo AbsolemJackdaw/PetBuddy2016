@@ -1,15 +1,5 @@
 package subaraki.petbuddy.entity;
 
-import java.util.Map;
-import java.util.UUID;
-
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
-import com.mojang.realmsclient.dto.PlayerInfo;
-
-import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelBiped;
@@ -32,18 +22,12 @@ import net.minecraft.client.model.ModelSquid;
 import net.minecraft.client.model.ModelVillager;
 import net.minecraft.client.model.ModelWitch;
 import net.minecraft.client.model.ModelWolf;
-import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import subaraki.petbuddy.entity.model.ModelBatFix;
@@ -124,7 +108,6 @@ public class PetForm {
 		};
 	};
 
-
 	private static final ModelBatFix MODEL_BAT = new ModelBatFix();
 	private static final ModelSkeletonFix MODEL_SKELETON = new ModelSkeletonFix();
 	private static final ModelBiped MODEL_BIPED = new ModelBiped(0,0,64,64);
@@ -170,7 +153,6 @@ public class PetForm {
 	private static final ResourceLocation TEXTURE_SNOW_MAN = new ResourceLocation("textures/entity/snowman.png");
 	private static final ResourceLocation TEXTURE_WITCH = new ResourceLocation("textures/entity/witch.png");
 	private static final ResourceLocation TEXTURE_DOGE = new ResourceLocation("textures/entity/wolf/wolf.png");
-	public static ResourceLocation FRIENDSKIN = DefaultPlayerSkin.getDefaultSkinLegacy();;
 
 	public static final ResourceLocation[] TEXTURE_RABBIT = new ResourceLocation[]{
 			new ResourceLocation("textures/entity/rabbit/brown.png"),
@@ -210,76 +192,15 @@ public class PetForm {
 			new ResourceLocation("textures/entity/cat/siamese.png")
 	};
 
-	public static enum EnumPetform{
-		STEVE,
-		SHEEP,
-		ZOMBIE,
-		SKELETON,
-		PIG,
-		COW,
-		SQUID,
-		CHICKEN,
-		SPIDER,
-		CAVESPIDER,
-		BLAZE,
-		GHAST,
-		MOOSHROOM,
-		BAT,
-		POLARBEAR,
-		VILLAGER,
-		ENDERMAN,
-		CREEPER,
-		RABBIT,
-		ZOMBIEPIGMAN,
-		ENDERMITE,
-		SILVERFISH,
-		IRONGOLEM,
-		SNOWMAN,
-		CATE,
-		WITCH,
-		DOGE,
-		FRIEND
-	}
-
 	public static ModelBase getModelForForm(EntityPetBuddy entity){
 		switch (entity.getForm()){
-		case PIG: return MODEL_PIG;
-		case SHEEP: return MODEL_SHEEP2;
-		case SKELETON: return MODEL_SKELETON;
-		case SQUID: return MODEL_SQUID;
-		case CHICKEN: return MODEL_CHICKEN;
-		case GHAST: return MODEL_GHAST;
-		case BLAZE: return MODEL_BLAZE;
-		case BAT : return MODEL_BAT;
-		case POLARBEAR : return MODEL_POLARBEAR;
-		case VILLAGER : return MODEL_VILLAGER;
-		case ENDERMAN : return MODEL_ENDERMAN;
-		case CREEPER : return MODEL_CREEPER;
-		case RABBIT : return MODEL_RABBIT;
-		case SILVERFISH : return MODEL_SILVERFISH;
-		case ENDERMITE : return MODEL_ENDERMITE;
-		case IRONGOLEM : return MODEL_IRONGOLEM;
-		case SNOWMAN : return MODEL_SNOWMAN;
-		case CATE : return MODEL_CATE;
-		case WITCH : return MODEL_WITCH;
-		case DOGE : return MODEL_DOGE;
-
-		case SPIDER:
-		case CAVESPIDER: return MODEL_SPIDER;
-
-		case COW:
-		case MOOSHROOM: return MODEL_COW;
-
-		case ZOMBIEPIGMAN:
-			return MODEL_BIPED;
 		case ZOMBIE :
 			return entity.getTextureIndex() >= 6 ? MODEL_BIPED : MODEL_VILLAGER_ZOMBIE;
-
 		case STEVE:
 		case FRIEND:
 			return entity.getModelType().equals("default") ? MODEL_PLAYER_STEVE : MODEL_PLAYER_ALEX;
 
-		default:return null;
+		default:return entity.getForm().getModel();
 		}
 	}
 
@@ -289,41 +210,17 @@ public class PetForm {
 	 * */
 	public static ResourceLocation getTextureForModel(EntityPetBuddy entity){
 		switch (entity.getForm()) {
-		case COW: return TEXTURE_COW;
-		case PIG: return TEXTURE_PIG;
-		case SHEEP: return TEXTURE_SHEEP;
 		case ZOMBIE: return TEXTURE_ZOMBIE[entity.getTextureIndex()];
-		case SKELETON: return TEXTURE_SKELETON[entity.getTextureIndex()];
-		case SQUID: return TEXTURE_SQUID;
-		case  CHICKEN : return TEXTURE_CHICKEN;
-		case SPIDER: return TEXTURE_SPIDER;
-		case CAVESPIDER: return TEXTURE_CAVE_SPIDER;
-		case GHAST: return TEXTURE_GHAST;
-		case BLAZE: return TEXTURE_BLAZE;
-		case MOOSHROOM : return TEXTURE_MOOSHROOM;
-		case BAT : return TEXTURE_BAT;
-		case POLARBEAR : return TEXTURE_POLARBEAR;
+		case SKELETON : return TEXTURE_SKELETON[entity.getTextureIndex()];
 		case VILLAGER : return TEXTURE_VILLAGER[entity.getTextureIndex()];
-		case ENDERMAN : return TEXTURE_ENDERMAN;
-		case CREEPER : return TEXTURE_CREEPER;
 		case RABBIT : return TEXTURE_RABBIT[entity.getTextureIndex()];
-		case ZOMBIEPIGMAN : return TEXTURE_PIGMAN;
-		case IRONGOLEM : return TEXTURE_IRON_GOLEM;
-		case ENDERMITE : return TEXTURE_ENDERMITE;
-		case SILVERFISH : return TEXTURE_SILVERFISH;
-		case SNOWMAN : return TEXTURE_SNOW_MAN;
 		case CATE : return TEXTURE_CATE[entity.getTextureIndex()];
-		case WITCH : return TEXTURE_WITCH;
-		case DOGE : return TEXTURE_DOGE;
-
-		case FRIEND :
-			return FRIENDSKIN;
+		case FRIEND : return entity.FRIENDSKIN;
 		case STEVE: 
-			if(entity.getOwner() != null && entity.getOwner() instanceof EntityPlayer)
-				if(((EntityPlayer)entity.getOwner()) instanceof AbstractClientPlayer)
-					return ((AbstractClientPlayer)entity.getOwner()).getLocationSkin();
+			if(entity.getOwner() != null && ((EntityPlayer)entity.getOwner()) instanceof AbstractClientPlayer)
+				return ((AbstractClientPlayer)entity.getOwner()).getLocationSkin();
 
-		default: return null;
+		default : return entity.getForm().getResloc();
 		}
 	}
 
@@ -335,32 +232,10 @@ public class PetForm {
 		default : return 0F;
 		}
 	}
-	public static float[] getRenderSwordOffset(EnumPetform form){
-		switch (form) {
-
-		case GHAST : return new float[]{8, 7,-22};
-		case BAT : return new float[]{0f, 2,-20}; 
-		case PIG :  return new float[]{7,6,-15};
-		case CHICKEN : return new float[]{4,2,-16};
-		case SPIDER : case CAVESPIDER : return new float[]{5,5,0};
-		case BLAZE : return new float[]{8, 2 ,-8};
-		case VILLAGER : case WITCH : return new float[]{-0.5f,6.5f,-6.5f};
-		case CREEPER : return new float[]{4,3f,-10};
-		case ENDERMAN : return new float[]{0, 2, -25};
-		case RABBIT : return new float[]{3,0,-20};
-		case ENDERMITE : case SILVERFISH : return new float[]{0,0,-18};
-		case SNOWMAN : return new float[]{10,2,-3};
-		case IRONGOLEM : return new float[]{11,4,-25};
-		case CATE : return new float[]{0,-1,-12};
-		case DOGE : return new float[]{4,0,-12};
-
-		default: return new float[]{7,6,-9};
-		}
-	}
 
 	public static float getScaleForForm(EnumPetform form){
 		switch (form) {
-		case SPIDER :
+		case SPIDER : 
 			return 0.45f;
 		case ENDERMITE : case SILVERFISH : case CHICKEN :
 			return 0.56f;
@@ -368,78 +243,81 @@ public class PetForm {
 			return 0.6f;
 		case BAT : case SQUID :
 			return 0.25f;
-
-		default:return 0.4F;
+		default : 
+			return 0.4F;
 		}
 	}
 
 	public static EnumPetform getFormFromItem(ItemStack stack){
-		if(stack == null)
-			return EnumPetform.STEVE;
-		if(stack.getItem() == null)
+		if(stack == null || stack.getItem() == null)
 			return EnumPetform.STEVE;
 
-		if(stack.getItem() instanceof ItemBlock){
-			Block block = Block.getBlockFromItem(stack.getItem());
-			if(block.equals(Blocks.WOOL))
-				return EnumPetform.SHEEP;
-			else if(block.equals(Blocks.BROWN_MUSHROOM) || block.equals(Blocks.RED_MUSHROOM))
-				return EnumPetform.MOOSHROOM;
-			else if(block.equals(Blocks.END_STONE))
-				return EnumPetform.ENDERMITE;
-			else if(block.equals(Blocks.STONEBRICK))
-				return EnumPetform.SILVERFISH;
-			else if(block.equals(Blocks.RED_FLOWER))
-				return EnumPetform.IRONGOLEM;
-			else if (block.equals(Blocks.SNOW))
-				return EnumPetform.SNOWMAN;
-		}
-		else{
-			Item item = stack.getItem();
-			if(item.equals(Items.ROTTEN_FLESH))
-				return EnumPetform.ZOMBIE;
-			else if (item.equals(Items.LEATHER))
-				return EnumPetform.COW;
-			else if (item.equals(Items.DYE) && stack.getMetadata() == 0)
-				return EnumPetform.SQUID;
-			else if (item.equals(Items.PORKCHOP) || item.equals(Items.COOKED_PORKCHOP))
-				return EnumPetform.PIG;
-			else if (item.equals(Items.FEATHER))
-				return EnumPetform.CHICKEN;
-			else if (item.equals(Items.STRING) || item.equals(Items.SPIDER_EYE))
-				return EnumPetform.SPIDER;
-			else if (item.equals(Items.FERMENTED_SPIDER_EYE))
-				return EnumPetform.CAVESPIDER;
-			else if (item.equals(Items.GHAST_TEAR))
-				return EnumPetform.GHAST;
-			else if (item.equals(Items.BLAZE_POWDER)|| item.equals(Items.BLAZE_ROD))
-				return EnumPetform.BLAZE;
-			else if (item.equals(Items.ARROW))
-				return EnumPetform.SKELETON;
-			else if (item.equals(Items.COOKIE))
-				return EnumPetform.BAT;
-			else if (item.equals(Items.FISH) && (stack.getMetadata() == 0 || stack.getMetadata() == 1))
-				return EnumPetform.POLARBEAR;
-			else if (item.equals(Items.BOOK))
-				return EnumPetform.VILLAGER;
-			else if (item.equals(Items.ENDER_PEARL)||item.equals(Items.ENDER_EYE))
-				return EnumPetform.ENDERMAN;
-			else if (item.equals(Items.GUNPOWDER))
-				return EnumPetform.CREEPER;
-			else if (item.equals(Items.RABBIT_FOOT))
-				return EnumPetform.RABBIT;
-			else if (item.equals(Items.NETHER_WART))
-				return EnumPetform.ZOMBIEPIGMAN;
-			else if (item.equals(Items.COOKED_FISH) && (stack.getMetadata() == 0 || stack.getMetadata() == 1))
-				return EnumPetform.CATE;
-			else if (item.equals(Items.POTIONITEM))
-				return EnumPetform.WITCH;
-			else if (item.equals(Items.BONE))
-				return EnumPetform.DOGE;
-			else if (item.equals(Items.NAME_TAG))
-				return EnumPetform.FRIEND;
+		for(EnumPetform form : EnumPetform.values()){
+			for(ItemStack identifier : form.itemstacks){
+				if(ItemStack.areItemsEqual(identifier, stack))
+					return form;
+			}
 		}
 
 		return EnumPetform.STEVE;
+	}
+
+	public static enum EnumPetform{
+		STEVE(null, MODEL_BIPED, null, (ItemStack[])null),
+		SHEEP(TEXTURE_SHEEP, MODEL_SHEEP2, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Blocks.WOOL)}),
+		ZOMBIE(null, MODEL_BIPED, null, new ItemStack[]{new ItemStack(Items.ROTTEN_FLESH)}),
+		SKELETON(null, MODEL_SKELETON, null,  new ItemStack[]{new ItemStack(Items.ARROW)}),
+		PIG(TEXTURE_PIG, MODEL_PIG, new float[]{7,6,-15}, new ItemStack[]{new ItemStack(Items.PORKCHOP)}),
+		COW(TEXTURE_COW, MODEL_COW, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Items.LEATHER), new ItemStack(Items.BEEF)}),
+		SQUID(TEXTURE_SQUID, MODEL_SQUID, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Items.DYE,1,0)}),
+		CHICKEN(TEXTURE_CHICKEN, MODEL_CHICKEN, new float[]{4,2,-16}, new ItemStack[]{new ItemStack(Items.FEATHER), new ItemStack(Items.CHICKEN)}),
+		SPIDER(TEXTURE_SPIDER, MODEL_SPIDER, new float[]{5,5,0}, new ItemStack[]{new ItemStack(Items.SPIDER_EYE)}),
+		CAVESPIDER(TEXTURE_CAVE_SPIDER, MODEL_SPIDER, new float[]{5,5,0}, new ItemStack[]{new ItemStack(Items.FERMENTED_SPIDER_EYE)}),
+		BLAZE(TEXTURE_BLAZE, MODEL_BLAZE, new float[]{8, 2 ,-8}, new ItemStack[]{new ItemStack(Items.BLAZE_ROD)}),
+		GHAST(TEXTURE_GHAST, MODEL_GHAST, new float[]{8, 7,-22}, new ItemStack[]{new ItemStack(Items.GHAST_TEAR)}),
+		MOOSHROOM(TEXTURE_MOOSHROOM, MODEL_COW, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Blocks.BROWN_MUSHROOM), new ItemStack(Blocks.RED_MUSHROOM)}),
+		BAT(TEXTURE_BAT, MODEL_BAT, new float[]{0f, 2,-20}, new ItemStack[]{new ItemStack(Items.COOKIE)}),
+		POLARBEAR(TEXTURE_POLARBEAR, MODEL_POLARBEAR, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Items.FISH,1,0), new ItemStack(Items.FISH, 1, 1)}),
+		VILLAGER(null, MODEL_VILLAGER, new float[]{-0.5f,6.5f,-6.5f}, new ItemStack[]{new ItemStack(Items.BOOK)}),
+		ENDERMAN(TEXTURE_ENDERMAN, MODEL_ENDERMAN, new float[]{0, 2, -25}, new ItemStack[]{new ItemStack(Items.ENDER_PEARL), new ItemStack(Items.ENDER_EYE)}),
+		CREEPER(TEXTURE_CREEPER, MODEL_CREEPER, new float[]{4,3f,-10}, new ItemStack[]{new ItemStack(Items.GUNPOWDER)}),
+		RABBIT(null, MODEL_RABBIT, new float[]{3,0,-20}, new ItemStack[]{new ItemStack(Items.RABBIT_FOOT)}),
+		ZOMBIEPIGMAN(TEXTURE_PIGMAN, MODEL_BIPED, null, new ItemStack[]{new ItemStack(Items.NETHER_WART)}),
+		ENDERMITE(TEXTURE_ENDERMITE, MODEL_ENDERMITE, new float[]{0,0,-18}, new ItemStack[]{new ItemStack(Blocks.END_STONE)}),
+		SILVERFISH(TEXTURE_SILVERFISH, MODEL_SILVERFISH, new float[]{0,0,-18}, new ItemStack[]{new ItemStack(Blocks.STONEBRICK)}),
+		IRONGOLEM(TEXTURE_IRON_GOLEM, MODEL_IRONGOLEM, new float[]{11,4,-25}, new ItemStack[]{new ItemStack(Blocks.RED_FLOWER)}),
+		SNOWMAN(TEXTURE_SNOW_MAN, MODEL_SNOWMAN, new float[]{10,2,-3}, new ItemStack[]{new ItemStack(Blocks.SNOW)}),
+		CATE(null, MODEL_CATE, new float[]{0,-1,-12}, new ItemStack[]{new ItemStack(Items.COOKED_FISH,1,0), new ItemStack(Items.COOKED_FISH, 1, 1)}),
+		WITCH(TEXTURE_WITCH, MODEL_WITCH, new float[]{-0.5f,6.5f,-6.5f}, new ItemStack[]{new ItemStack(Items.POTIONITEM)}),
+		DOGE(TEXTURE_DOGE, MODEL_DOGE, new float[]{4,0,-12}, new ItemStack[]{new ItemStack(Items.BONE)}),
+		FRIEND(null, null, null, new ItemStack[]{new ItemStack(Items.NAME_TAG)});
+
+		private ResourceLocation resloc;
+		private ModelBase model;
+		private ItemStack[] itemstacks;
+		private float[] swordoffset;
+
+		private EnumPetform(ResourceLocation resloc, ModelBase model, float[] swordOffset, ItemStack... stack){
+			this.resloc = resloc;
+			this.model = model;
+			this.itemstacks = stack;
+			this.swordoffset = swordOffset;
+		}
+
+		public ResourceLocation getResloc() {
+			return resloc;
+		}
+
+		public ModelBase getModel() {
+			return model;
+		}
+
+		public ItemStack[] getItemStacks() {
+			return itemstacks;
+		}
+
+		public float[] getSwordOffset() {
+			return swordoffset;
+		}
 	}
 }

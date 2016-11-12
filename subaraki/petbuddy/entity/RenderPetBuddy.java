@@ -30,7 +30,9 @@ import net.minecraft.client.renderer.entity.layers.LayerHeldItem;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.SkinManager;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemStack;
@@ -74,18 +76,33 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 			//gui rendering client side only fix. packet never gets processed correctly because it is client side only
 			entity.setForceRender(false);
 			NetworkHandler.NETWORK.sendToServer(new PacketSyncPetRenderData(false));
-			
+
 			//Set texture only once
 			if(entity.getNameFromTag().length() > 1){
+
 				GameProfile profile = TileEntitySkull.updateGameprofile(new GameProfile((UUID)null, entity.getNameFromTag()));
-				Map<Type, MinecraftProfileTexture> map = Minecraft.getMinecraft().getSkinManager().loadSkinFromCache(profile);
-				if (map.containsKey(Type.SKIN)){
-					PetForm.FRIENDSKIN = Minecraft.getMinecraft().getSkinManager().loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
+
+				ResourceLocation resourcelocation = DefaultPlayerSkin.getDefaultSkinLegacy();
+
+				if (profile != null)
+				{
+					SkinManager skinMngr= Minecraft.getMinecraft().getSkinManager();
+					Map<Type, MinecraftProfileTexture> map = skinMngr.loadSkinFromCache(profile);
+
+					if (map.containsKey(Type.SKIN))
+					{
+						resourcelocation = skinMngr.loadSkin((MinecraftProfileTexture)map.get(Type.SKIN), Type.SKIN);
+					}
+					else
+					{
+						UUID uuid = EntityPlayer.getUUID(profile);
+						resourcelocation = DefaultPlayerSkin.getDefaultSkin(uuid);
+					}
 				}
-				else 
-					PetForm.FRIENDSKIN = DefaultPlayerSkin.getDefaultSkinLegacy();
+
+				entity.FRIENDSKIN = resourcelocation;
 			}
-			
+
 			//clear layers before setting model
 			clearLayers();
 
@@ -153,7 +170,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 		private static final ResourceLocation TEXTURE = new ResourceLocation("textures/entity/sheep/sheep_fur.png");
 		private static final ModelSheep1 MODEL_SHEEP1 = new ModelSheep1(){
 			public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float p_78086_2_, float p_78086_3_, float partialTickTime) {
-				//super.setLivingAnimations(entitylivingbaseIn, p_78086_2_, p_78086_3_, partialTickTime);
+				//keep empty. do nothing here
 			}
 		};
 
@@ -270,7 +287,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 
 				GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
-				float scale[] = PetForm.getRenderSwordOffset(pet.getForm());
+				float scale[] = pet.getForm().getSwordOffset();
 				GlStateManager.translate(scale[0]/16.0F,scale[1]/16.0F,scale[2]/16.0F);
 				GlStateManager.rotate(35.0F, 1.0F, 0.0F, 0.0F);
 				Minecraft.getMinecraft().getItemRenderer().renderItemSide(pet, p_188358_2_, p_188358_3_, false);
@@ -285,19 +302,14 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 	}
 	//////////////////////
 
-	private float tentacleAngle = 0;
-	private float lastTentacleAngle = 0;
-	private float f = 0;
+	private float someFloat = 0;
 	@Override
 	protected float handleRotationFloat(EntityPetBuddy livingBase, float partialTicks) {
-		if(livingBase.getForm().equals(EnumPetform.SQUID)){
-			return (float)Math.sin(tentacleAngle+=0.4f * 0.25f)/3f + 0.4f; //lastTentacleAngle + (tentacleAngle - lastTentacleAngle) * partialTicks;
-		}
-
+		if(livingBase.getForm().equals(EnumPetform.SQUID))
+			return (float)Math.sin(someFloat+=0.4f * 0.25f)/3f + 0.4f; //lastTentacleAngle + (tentacleAngle - lastTentacleAngle) * partialTicks;
 		else if (livingBase.getForm().equals(EnumPetform.BLAZE) || livingBase.getForm().equals(EnumPetform.GHAST)|| livingBase.getForm().equals(EnumPetform.BAT)||
-				livingBase.getForm().equals(EnumPetform.SILVERFISH) || livingBase.getForm().equals(EnumPetform.ENDERMITE)){
-			return tentacleAngle+=0.8f;
-		}
+				livingBase.getForm().equals(EnumPetform.SILVERFISH) || livingBase.getForm().equals(EnumPetform.ENDERMITE))
+			return someFloat+=0.8f;
 		else if(livingBase.getForm().equals(EnumPetform.DOGE))
 			return 8f;
 

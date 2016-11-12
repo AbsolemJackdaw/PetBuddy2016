@@ -1,6 +1,7 @@
 package subaraki.petbuddy.entity;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -37,6 +38,7 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import subaraki.petbuddy.capability.PetInventory;
@@ -56,6 +58,8 @@ public class EntityPetBuddy extends EntityTameable {
 	protected static final DataParameter<String> SKINNED = EntityDataManager.<String>createKey(EntityPetBuddy.class, DataSerializers.STRING);
 	protected static final DataParameter<Boolean> UPDATE = EntityDataManager.<Boolean>createKey(EntityPetBuddy.class, DataSerializers.BOOLEAN);
 
+	public ResourceLocation FRIENDSKIN = DefaultPlayerSkin.getDefaultSkinLegacy();
+
 	public EntityPetBuddy(World world) {
 		super(world);
 		this.setSize(0.5F, 0.7f);
@@ -64,7 +68,7 @@ public class EntityPetBuddy extends EntityTameable {
 		this.tasks.addTask(3, new EntityAIFollowOwner(this, 0.3F, 7.0F, 2.0F));
 		this.tasks.addTask(4, new EntityAIWander(this, 0.3F));
 		this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
-		this.tasks.addTask(6,new EntityAIWatchClosest(this, Entity.class, 5.0F));
+		this.tasks.addTask(6, new EntityAIWatchClosest(this, Entity.class, 5.0F));
 		this.tasks.addTask(7, new EntityAILookIdle(this));
 	}
 

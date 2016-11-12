@@ -15,29 +15,10 @@ import subaraki.petbuddy.network.PacketSyncOwnInventory;
 public class StowOrSummonLogic {
 
 	public static void checkPet(EntityPlayer player){
-		if(player == null)
-			return;
-		if(player.worldObj == null)
-			return;
-
-		PetInventory inventory = PetInventory.get(player);
-
-		if(inventory.getPetID() != null){//player has a registered pet id
-			boolean hasPet = false;
-			//check for any loaded pets
-			for(Entity loadedEntity : player.worldObj.loadedEntityList)
-				if(loadedEntity instanceof EntityPetBuddy){
-					EntityPetBuddy epb = (EntityPetBuddy)loadedEntity;
-					if(epb.getOwnerId() != null && epb.getOwnerId().equals(player.getUniqueID())){
-						if(epb.getEntityId() == (int)inventory.getPetID()){//if the entity is the one registered to the player, keep it.
-							hasPet = true;
-						}
-					}
-				}
-			if(!hasPet)//if no pets were found, give the player a new pet
-				givePet(player);
-		}else//if no id was registered, give the player a new pet
-			givePet(player);
+		//no point in checking
+		//pets despawn when their id doesn't match the owner's saved data, and it's always different wher reloading a world
+		
+		//TODO check configuration wether to spawn petbuddy on login or not
 	}
 
 	public static void givePet(EntityPlayer player){
