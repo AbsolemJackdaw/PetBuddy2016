@@ -253,6 +253,7 @@ public class PetForm {
 			return EnumPetform.STEVE;
 
 		for(EnumPetform form : EnumPetform.values()){
+			if(form.itemstacks == null) continue;
 			for(ItemStack identifier : form.itemstacks){
 				if(ItemStack.areItemsEqual(identifier, stack))
 					return form;
