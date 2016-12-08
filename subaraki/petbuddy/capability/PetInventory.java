@@ -110,7 +110,7 @@ public class PetInventory {
 	public EntityPetBuddy getPet(EntityPlayer player){
 		if(player != null)
 			if(getPetID() != null)
-				return (EntityPetBuddy)player.worldObj.getEntityByID(getPetID());
+				return (EntityPetBuddy)player.world.getEntityByID(getPetID());
 		return null;
 	}
 

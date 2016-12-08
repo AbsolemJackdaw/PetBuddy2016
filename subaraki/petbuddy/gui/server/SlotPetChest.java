@@ -11,8 +11,9 @@ import net.minecraftforge.items.SlotItemHandler;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 
-public class SlotPetChest extends SlotItemHandler{
+public class SlotPetChest extends SlotItemHandler {
 	private PetInventory petInventory = null;
+
 	public SlotPetChest(PetInventory inventory, int index, int posX, int posY) {
 		super(inventory.getInventoryHandler(), index, posX, posY);
 		petInventory = inventory;
@@ -22,7 +23,7 @@ public class SlotPetChest extends SlotItemHandler{
 		return petInventory;
 	}
 
-	public static class Armory extends SlotPetChest{
+	public static class Armory extends SlotPetChest {
 
 		private final int slotId;
 
@@ -41,23 +42,31 @@ public class SlotPetChest extends SlotItemHandler{
 			super.onSlotChanged();
 
 			EntityPetBuddy e = null;
-			if(getPetInventory() != null){
+			if (getPetInventory() != null) {
 				EntityPlayer player = getPetInventory().getPlayer();
 				e = PetInventory.get(player).getPet(player);
 			}
-			if(e == null)
+			if (e == null)
 				return;
 
-			if (slotId == 12){
-				e.setItemStackToSlot(EntityEquipmentSlot.HEAD, getStack());//stack can be null. is intended
+			if (slotId == 12) {
+				e.setItemStackToSlot(EntityEquipmentSlot.HEAD, getStack());// stack
+																			// can
+																			// be
+																			// null.
+																			// is
+																			// intended
 			}
 
-			else if(slotId == 13){
-				e.setHeldItem(EnumHand.MAIN_HAND, getStack());//stack can be null. is intended
+			else if (slotId == 13) {
+				e.setHeldItem(EnumHand.MAIN_HAND, getStack());// stack can be
+																// null. is
+																// intended
 			}
-			
-			else if (slotId == 14){
-				String tagName = getStack() != null && getStack().hasDisplayName() && Items.NAME_TAG.equals(getStack().getItem()) ? getStack().getDisplayName() : "";
+
+			else if (slotId == 14) {
+				String tagName = getStack() != null && getStack().hasDisplayName()
+						&& Items.NAME_TAG.equals(getStack().getItem()) ? getStack().getDisplayName() : "";
 				e.setNameForNameTag(tagName);
 				e.setForceRender(true);
 			}
@@ -70,19 +79,20 @@ public class SlotPetChest extends SlotItemHandler{
 
 		@Override
 		public boolean isItemValid(ItemStack stack) {
-			if (stack == null)return false;
-			if (stack.getItem()==null)return false;
+			if (stack.isEmpty())
+				return false;
 			switch (slotId) {
 			case 12:
-				if(!(stack.getItem() instanceof ItemArmor))
+				if (!(stack.getItem() instanceof ItemArmor))
 					return false;
 				ItemArmor armor = (ItemArmor) stack.getItem();
 				return armor.getEquipmentSlot().equals(EntityEquipmentSlot.HEAD);
-			case 13 : 
-				if(!(stack.getItem() instanceof ItemSword))
+			case 13:
+				if (!(stack.getItem() instanceof ItemSword))
 					return false;
 				return true;
-			case 14 : return true;
+			case 14:
+				return true;
 
 			}
 			return super.isItemValid(stack);

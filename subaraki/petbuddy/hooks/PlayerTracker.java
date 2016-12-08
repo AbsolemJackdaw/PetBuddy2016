@@ -27,7 +27,7 @@ public class PlayerTracker {
 
 	@SubscribeEvent
 	public void onPlayerLogin(PlayerLoggedInEvent event){
-		if (!event.player.worldObj.isRemote)
+		if (!event.player.world.isRemote)
 			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory((EntityPlayerMP)event.player), (EntityPlayerMP)event.player);
 
 		StowOrSummonLogic.checkPet(event.player);
@@ -39,7 +39,7 @@ public class PlayerTracker {
 
 	@SubscribeEvent
 	public void onPlayerChangedDimension(PlayerChangedDimensionEvent event){
-		if (!event.player.worldObj.isRemote)
+		if (!event.player.world.isRemote)
 			NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory((EntityPlayerMP)event.player), (EntityPlayerMP)event.player);
 
 		StowOrSummonLogic.checkPet(event.player);

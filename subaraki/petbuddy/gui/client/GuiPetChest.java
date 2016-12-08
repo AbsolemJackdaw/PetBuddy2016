@@ -46,7 +46,7 @@ public class GuiPetChest extends GuiContainer {
 
 	private void tryToDrawModeltypeButton(){
 		ItemStack form = this.inventorySlots.getSlot(14).getStack();
-		if(form != null && form.hasDisplayName() && form.getItem().equals(Items.NAME_TAG)){
+		if(!form.isEmpty() && form.hasDisplayName() && form.getItem().equals(Items.NAME_TAG)){
 			buttonList.clear();
 
 			int posX = (this.width - xSize) / 2;

@@ -55,8 +55,10 @@ public class EntityPetBuddy extends EntityTameable {
 	private EntityAIOwnerHurtTarget AIOwnerCommands = new EntityAIOwnerHurtTarget(this);
 	private EntityAIHurtByTarget AIHurtBy = new EntityAIHurtByTarget(this, true, new Class[0]);
 
-	protected static final DataParameter<String> SKINNED = EntityDataManager.<String>createKey(EntityPetBuddy.class, DataSerializers.STRING);
-	protected static final DataParameter<Boolean> UPDATE = EntityDataManager.<Boolean>createKey(EntityPetBuddy.class, DataSerializers.BOOLEAN);
+	protected static final DataParameter<String> SKINNED = EntityDataManager.<String> createKey(EntityPetBuddy.class,
+			DataSerializers.STRING);
+	protected static final DataParameter<Boolean> UPDATE = EntityDataManager.<Boolean> createKey(EntityPetBuddy.class,
+			DataSerializers.BOOLEAN);
 
 	public ResourceLocation FRIENDSKIN = DefaultPlayerSkin.getDefaultSkinLegacy();
 
@@ -72,7 +74,7 @@ public class EntityPetBuddy extends EntityTameable {
 		this.tasks.addTask(7, new EntityAILookIdle(this));
 	}
 
-	/////INITS/////
+	///// INITS/////
 	@Override
 	protected void applyEntityAttributes() {
 		super.applyEntityAttributes();
@@ -88,20 +90,20 @@ public class EntityPetBuddy extends EntityTameable {
 
 	}
 
-	/////AI AND INVENTORY RELATED//////
+	///// AI AND INVENTORY RELATED//////
 	@Override
 	public EntityAgeable createChild(EntityAgeable ageable) {
 		return null;
 	}
 
-	private void initAttackTasks(){
+	private void initAttackTasks() {
 		tasks.addTask(2, AIAttack);
 		this.targetTasks.addTask(1, AIOwnerHurt);
 		this.targetTasks.addTask(2, AIHurtBy);
 		this.targetTasks.addTask(3, AIOwnerCommands);
 	}
 
-	private void removeAttackTasks(){
+	private void removeAttackTasks() {
 		tasks.removeTask(AIAttack);
 		this.targetTasks.removeTask(AIOwnerHurt);
 		this.targetTasks.removeTask(AIHurtBy);
@@ -111,66 +113,87 @@ public class EntityPetBuddy extends EntityTameable {
 	@Override
 	public void setItemStackToSlot(EntityEquipmentSlot slotIn, ItemStack stack) {
 		super.setItemStackToSlot(slotIn, stack);
-		switch(slotIn){
+		switch (slotIn) {
 		case MAINHAND:
-			if(stack == null)
+			if (stack.isEmpty())
 				removeAttackTasks();
 			else
 				initAttackTasks();
 			break;
-		default:break;
+		default:
+			break;
 		}
 	}
 
-	/////ATTACK LOGIC/////
+	///// ATTACK LOGIC/////
 	@Override
 	public boolean shouldAttackEntity(EntityLivingBase target, EntityLivingBase player) {
-		if (!(target instanceof EntityCreeper) && !(target instanceof EntityGhast)){
-			if (target instanceof EntityPetBuddy){
-				EntityPetBuddy buddy = (EntityPetBuddy)target;
+		if (!(target instanceof EntityCreeper) && !(target instanceof EntityGhast)) {
+			if (target instanceof EntityTameable) {
+				EntityTameable buddy = (EntityTameable) target;
 				if (buddy.getOwner() == player)
 					return false;
 			}
-			return target instanceof EntityPlayer && player instanceof EntityPlayer && !((EntityPlayer)player).canAttackPlayer((EntityPlayer)target) ? false : !(target instanceof EntityHorse) || !((EntityHorse)target).isTame();
-		}
-		else
+			return target instanceof EntityPlayer && player instanceof EntityPlayer
+					&& !((EntityPlayer) player).canAttackPlayer((EntityPlayer) target) ? false
+							: !(target instanceof EntityHorse) || !((EntityHorse) target).isTame();
+		} else
 			return false;
 	}
+
 	@Override
 	public boolean attackEntityAsMob(Entity victim) {
 		boolean flag;
 
-		if(this.getHeldItemMainhand()!= null){
-			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), ((ItemSword)(this.getHeldItemMainhand().getItem())).getDamageVsEntity()+ 3.0f); //cannot retrieve attack damage, which is set as 3+material.damage vs entity 
-			if(flag && getMaster() != null){
+		if (this.getHeldItemMainhand() != null) {
+			float damage = (((ItemSword) (this.getHeldItemMainhand().getItem())).getDamageVsEntity() + 3.0f);
+			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), damage / 2f); // cannot
+			// retrieve
+			// attack
+			// damage,
+			// which
+			// is
+			// set
+			// as
+			// 3+material.damage
+			// vs
+			// entity
+			if (flag && getMaster() != null) {
+				victim.attackEntityFrom(DamageSource.causePlayerDamage(getMaster()), damage / 2f);
 				getHeldItemMainhand().damageItem(1, this);
-				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setStackInSlot(13, getItemStackFromSlot(EntityEquipmentSlot.MAINHAND));
+				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setStackInSlot(13,
+						getItemStackFromSlot(EntityEquipmentSlot.MAINHAND));
 			}
 			return flag;
 		}
 
 		return victim.attackEntityFrom(DamageSource.causeMobDamage(this), 2);
 	}
+
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-		//health before attack
-		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0 : getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
+		// health before attack
+		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0
+				: getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
 		boolean isattacked = super.attackEntityFrom(source, amount);
-		//health after attack
-		int armorHealth2 = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0 : getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
+		// health after attack
+		int armorHealth2 = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0
+				: getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
 
-		if(armorHealth2 < armorHealth)
-			if(getMaster() != null)
-				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setStackInSlot(12, getItemStackFromSlot(EntityEquipmentSlot.HEAD).copy());
+		if (armorHealth2 < armorHealth)
+			if (getMaster() != null)
+				getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setStackInSlot(12,
+						getItemStackFromSlot(EntityEquipmentSlot.HEAD).copy());
 		return isattacked;
 	}
+
 	@Override
 	protected void damageArmor(float damage) {
-		float theDamage = damage/4f <1f ? 1f : damage/4f;
-		if(getItemStackFromSlot(EntityEquipmentSlot.HEAD)!=null){
-			getItemStackFromSlot(EntityEquipmentSlot.HEAD).damageItem((int)theDamage, this);
+		float theDamage = damage / 4f < 1f ? 1f : damage / 4f;
+		if (getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null) {
+			getItemStackFromSlot(EntityEquipmentSlot.HEAD).damageItem((int) theDamage, this);
 
-			if(getItemStackFromSlot(EntityEquipmentSlot.HEAD).stackSize == 0){
+			if (getItemStackFromSlot(EntityEquipmentSlot.HEAD).getCount() == 0) {
 				setItemStackToSlot(EntityEquipmentSlot.HEAD, null);
 			}
 		}
@@ -178,54 +201,58 @@ public class EntityPetBuddy extends EntityTameable {
 	//////////////////////////////////////////////////////////////////////////////////////////////
 
 	@Override
-	public boolean processInteract(EntityPlayer player, EnumHand hand, ItemStack stack) {
+	public boolean processInteract(EntityPlayer player, EnumHand hand) {
 
-		if(!player.equals(getMaster()))
+		ItemStack stack = player.getActiveItemStack();
+
+		if (!player.equals(getMaster()))
 			return false;
 
-		if(stack != null && stack.getItem() != null)
-			if(stack.getItem().equals(Items.SADDLE)){
-				if(!this.isRiding()){
+		if (!stack.isEmpty())
+			if (stack.getItem().equals(Items.SADDLE)) {
+				if (!this.isRiding()) {
 					this.startRiding(player);
 					return true;
-				}else{
+				} else {
 					this.dismountRidingEntity();
 					return true;
 				}
-			}
-			else if (stack.getItem().equals(Items.NAME_TAG)){
-				if(stack.hasDisplayName())
+			} else if (stack.getItem().equals(Items.NAME_TAG)) {
+				if (stack.hasDisplayName())
 					setCustomNameTag(stack.getDisplayName());
-				//return true so the item does not get consumed. setting the name is done above
+				// return true so the item does not get consumed. setting the
+				// name is done above
 				return true;
-			}else if(stack.getItem() instanceof ItemFood){
-				if(getHealth() < getMaxHealth()){
-					heal( ((ItemFood)stack.getItem()).getHealAmount(stack) );
-					stack.stackSize--;
-					if(stack.stackSize==0)stack=null;
-					if(worldObj.isRemote)
-						worldObj.spawnParticle(EnumParticleTypes.HEART,posX,posY + 0.5f,posZ,0,0,0,new int[0]);
+			} else if (stack.getItem() instanceof ItemFood) {
+				if (getHealth() < getMaxHealth()) {
+					heal(((ItemFood) stack.getItem()).getHealAmount(stack));
+					stack.shrink(1);
+					if (stack.getCount() == 0)
+						stack = ItemStack.EMPTY;
+					if (world.isRemote)
+						world.spawnParticle(EnumParticleTypes.HEART, posX, posY + 0.5f, posZ, 0, 0, 0, new int[0]);
 				}
 				return true;
 			}
 
-		if(this.isRiding()){
+		if (this.isRiding()) {
 			this.dismountRidingEntity();
 			return true;
 		}
 
-		if(!player.getCapability(PetInventoryCapability.CAPABILITY, null).canAccesStorage()){
-			if(stack!=null)
-				if(stack.getItem()!= null)
-					if(stack.getItem() instanceof ItemBlock)
-						if(Block.getBlockFromItem(stack.getItem()).equals(Blocks.CHEST) || Block.getBlockFromItem(stack.getItem()).equals(Blocks.TRAPPED_CHEST)){
-							player.getCapability(PetInventoryCapability.CAPABILITY, null).setHoldingChest();
-							player.getHeldItem(hand).stackSize--;
-							return true;
-						}
-		}else{
+		if (!player.getCapability(PetInventoryCapability.CAPABILITY, null).canAccesStorage()) {
+			if (!stack.isEmpty())
+				if (stack.getItem() instanceof ItemBlock)
+					if (Block.getBlockFromItem(stack.getItem()).equals(Blocks.CHEST)
+							|| Block.getBlockFromItem(stack.getItem()).equals(Blocks.TRAPPED_CHEST)) {
+						player.getCapability(PetInventoryCapability.CAPABILITY, null).setHoldingChest();
+						player.getHeldItem(hand).shrink(1);
+						return true;
+					}
+		} else {
 			getNavigator().setPath(getNavigator().getPathToEntityLiving(getOwner()), 1.0);
-			FMLNetworkHandler.openGui(player, PetBuddy.instance, 0, worldObj, (int)player.posX, (int)player.posY, (int)player.posZ);
+			FMLNetworkHandler.openGui(player, PetBuddy.instance, 0, world, (int) player.posX, (int) player.posY,
+					(int) player.posZ);
 			return true;
 		}
 
@@ -234,9 +261,9 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	public int getTotalArmorValue() {
-		if(getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null){
+		if (getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null) {
 			ItemStack helm = getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-			int armorValue = ((ItemArmor)helm.getItem()).damageReduceAmount * 8;
+			int armorValue = ((ItemArmor) helm.getItem()).damageReduceAmount * 8;
 			return armorValue;
 		}
 		return super.getTotalArmorValue();
@@ -246,26 +273,26 @@ public class EntityPetBuddy extends EntityTameable {
 	public void onLivingUpdate() {
 		super.onLivingUpdate();
 
-		if(getMaster() != null){
-			if(!worldObj.isRemote && (PetInventory.get(getMaster()).getPetID() == null || (int)PetInventory.get(getMaster()).getPetID() != getEntityId()))
+		if (getMaster() != null) {
+			if (!world.isRemote && (PetInventory.get(getMaster()).getPetID() == null
+					|| (int) PetInventory.get(getMaster()).getPetID() != getEntityId()))
 				setDead();
-		}
-		else		
+		} else
 			setDead();
 
 	}
 
 	public void onDeath(DamageSource cause) {
 		super.onDeath(cause);
-		if(getMaster() != null){
-			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setCooldown(2500+rand.nextInt(15000));
-			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setPetID((Integer)null);
+		if (getMaster() != null) {
+			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setCooldown(2500 + rand.nextInt(15000));
+			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setPetID((Integer) null);
 		}
 	}
 
 	@Override
 	public void setCustomNameTag(String name) {
-		if(getMaster() != null)
+		if (getMaster() != null)
 			getMaster().getCapability(PetInventoryCapability.CAPABILITY, null).setPetName(name);
 		super.setCustomNameTag(name);
 	}
@@ -277,7 +304,8 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	protected boolean canDespawn() {
-		return this.isRiding() ? false : true; //pet must despawn when too far away
+		return this.isRiding() ? false : true; // pet must despawn when too far
+		// away
 	}
 
 	@Override
@@ -285,10 +313,10 @@ public class EntityPetBuddy extends EntityTameable {
 		return EnumCreatureAttribute.UNDEFINED;
 	}
 
-	//	@Override
-	//	public boolean isAIDisabled() {
-	//		return false;
-	//	}
+	// @Override
+	// public boolean isAIDisabled() {
+	// return false;
+	// }
 
 	@Override
 	public boolean isEntityInvulnerable(DamageSource source) {
@@ -296,52 +324,57 @@ public class EntityPetBuddy extends EntityTameable {
 	}
 
 	////////////////////////////////////////////////////////////
-	///////////////PET BUDDY UNIQUE SPECIFICS///////////////////
+	/////////////// PET BUDDY UNIQUE SPECIFICS///////////////////
 	////////////////////////////////////////////////////////////
 
-	private EntityPlayer getMaster(){
-		return getOwner() instanceof EntityPlayer ? (EntityPlayer)getOwner() : null ;
+	private EntityPlayer getMaster() {
+		return getOwner() instanceof EntityPlayer ? (EntityPlayer) getOwner() : null;
 	}
 
-	public EnumPetform getForm(){
+	public EnumPetform getForm() {
 		return PetForm.getFormFromItem(getStackDefiningForm());
 	}
 
-	public ItemStack getStackDefiningForm(){
+	public ItemStack getStackDefiningForm() {
 		EntityLivingBase owner = getOwner();
-		if(owner instanceof EntityPlayer){
-			EntityPlayer player = (EntityPlayer)owner;
-			return player.getCapability(PetInventoryCapability.CAPABILITY,null).getInventoryHandler().getStackInSlot(14);
+		if (owner instanceof EntityPlayer) {
+			EntityPlayer player = (EntityPlayer) owner;
+			return player.getCapability(PetInventoryCapability.CAPABILITY, null).getInventoryHandler()
+					.getStackInSlot(14);
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
 	private static final EntitySheep dyePlaceHolder = new EntitySheep(null);
-	public float[] getColorFromDye(EnumDyeColor dye){
+
+	public float[] getColorFromDye(EnumDyeColor dye) {
 		return dyePlaceHolder.getDyeRgb(dye);
 	}
 
 	private int index;
-	public void setIndex(int lenght){
-		if(lenght > 0)
+
+	public void setIndex(int lenght) {
+		if (lenght > 0)
 			index = rand.nextInt(lenght);
 		else
 			index = 0;
 	}
-	public int getTextureIndex(){
+
+	public int getTextureIndex() {
 		return index;
 	}
 
 	private String modeltype = "default";
-	public String getModelType(){
+
+	public String getModelType() {
 		return modeltype;
 	}
 
-	public void setModelType(String type){
+	public void setModelType(String type) {
 		modeltype = type;
 	}
 
-	public void setNameForNameTag(String s){
+	public void setNameForNameTag(String s) {
 		dataManager.set(SKINNED, s);
 	}
 
@@ -349,10 +382,11 @@ public class EntityPetBuddy extends EntityTameable {
 		return dataManager.get(SKINNED);
 	}
 
-	public boolean shouldForceRenderUpdate(){
+	public boolean shouldForceRenderUpdate() {
 		return dataManager.get(UPDATE);
 	}
-	public void setForceRender(boolean flag){
+
+	public void setForceRender(boolean flag) {
 		dataManager.set(UPDATE, flag);
 	}
 }

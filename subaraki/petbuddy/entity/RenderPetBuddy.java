@@ -48,7 +48,7 @@ import subaraki.petbuddy.network.PacketSyncPetRenderData;
 
 public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRenderFactory{
 	private static final ResourceLocation ZOMBIE_TEXTURES = new ResourceLocation("textures/entity/zombie/zombie.png");
-	private ItemStack previousPetForm = null;
+	private ItemStack previousPetForm = ItemStack.EMPTY;
 
 	public RenderPetBuddy(RenderManager renderManager) {
 		super(renderManager, new ModelBiped(0,0,64,64), 0.25f);
@@ -259,7 +259,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 			ItemStack itemstack = flag ? entitylivingbaseIn.getHeldItemOffhand() : entitylivingbaseIn.getHeldItemMainhand();
 			ItemStack itemstack1 = flag ? entitylivingbaseIn.getHeldItemMainhand() : entitylivingbaseIn.getHeldItemOffhand();
 
-			if (itemstack != null || itemstack1 != null)
+			if (!itemstack.isEmpty() || !itemstack1.isEmpty())
 			{
 				GlStateManager.pushMatrix();
 
@@ -269,9 +269,9 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 			}
 		}
 
-		private void renderHeldItem(EntityPetBuddy pet, ItemStack p_188358_2_, ItemCameraTransforms.TransformType p_188358_3_, EnumHandSide handSide)
+		private void renderHeldItem(EntityPetBuddy pet, ItemStack stack, ItemCameraTransforms.TransformType cameraTransform, EnumHandSide handSide)
 		{
-			if (p_188358_2_ != null)
+			if (!stack.isEmpty())
 			{
 				GlStateManager.pushMatrix();
 				if(pet.getForm().equals(EnumPetform.BAT))
@@ -290,7 +290,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 				float scale[] = pet.getForm().getSwordOffset();
 				GlStateManager.translate(scale[0]/16.0F,scale[1]/16.0F,scale[2]/16.0F);
 				GlStateManager.rotate(35.0F, 1.0F, 0.0F, 0.0F);
-				Minecraft.getMinecraft().getItemRenderer().renderItemSide(pet, p_188358_2_, p_188358_3_, false);
+				Minecraft.getMinecraft().getItemRenderer().renderItemSide(pet, stack, cameraTransform, false);
 				GlStateManager.popMatrix();
 			}
 		}
