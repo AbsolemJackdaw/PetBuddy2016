@@ -148,16 +148,7 @@ public class EntityPetBuddy extends EntityTameable {
 		if (this.getHeldItemMainhand() != null) {
 			float damage = (((ItemSword) (this.getHeldItemMainhand().getItem())).getDamageVsEntity() + 3.0f);
 			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), damage / 2f); // cannot
-			// retrieve
-			// attack
-			// damage,
-			// which
-			// is
-			// set
-			// as
-			// 3+material.damage
-			// vs
-			// entity
+			// retrieve attack damage, which is set as 3+material.damage vs entity
 			if (flag && getMaster() != null) {
 				victim.attackEntityFrom(DamageSource.causePlayerDamage(getMaster()), damage / 2f);
 				getHeldItemMainhand().damageItem(1, this);
@@ -203,7 +194,7 @@ public class EntityPetBuddy extends EntityTameable {
 	@Override
 	public boolean processInteract(EntityPlayer player, EnumHand hand) {
 
-		ItemStack stack = player.getActiveItemStack();
+		ItemStack stack = player.getHeldItem(hand);
 
 		if (!player.equals(getMaster()))
 			return false;
@@ -241,7 +232,6 @@ public class EntityPetBuddy extends EntityTameable {
 		}
 
 		if (!player.getCapability(PetInventoryCapability.CAPABILITY, null).canAccesStorage()) {
-			if (!stack.isEmpty())
 				if (stack.getItem() instanceof ItemBlock)
 					if (Block.getBlockFromItem(stack.getItem()).equals(Blocks.CHEST)
 							|| Block.getBlockFromItem(stack.getItem()).equals(Blocks.TRAPPED_CHEST)) {
