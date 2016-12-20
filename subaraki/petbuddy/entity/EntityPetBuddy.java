@@ -145,6 +145,7 @@ public class EntityPetBuddy extends EntityTameable {
 	public boolean attackEntityAsMob(Entity victim) {
 		boolean flag;
 
+		//closes #9
 		if (this.getHeldItemMainhand() != null) {
 			float damage = (((ItemSword) (this.getHeldItemMainhand().getItem())).getDamageVsEntity() + 3.0f);
 			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), damage / 2f); // cannot
