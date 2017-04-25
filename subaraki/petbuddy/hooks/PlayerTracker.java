@@ -56,8 +56,8 @@ public class PlayerTracker {
 		//pet buddy inventory should never wither.
 		PetInventory inventory = event.getEntityPlayer().getCapability(PetInventoryCapability.CAPABILITY, null);
 		PetInventory inventory_original = event.getOriginal().getCapability(PetInventoryCapability.CAPABILITY, null);
-		NBTTagCompound tag = (NBTTagCompound) inventory.writeData();
-		inventory_original.readData(tag);
+		NBTTagCompound tag = (NBTTagCompound) inventory_original.writeData();
+		inventory.readData(tag);
 	}
 
 	@SubscribeEvent

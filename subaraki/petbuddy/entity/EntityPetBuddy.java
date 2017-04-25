@@ -344,11 +344,17 @@ public class EntityPetBuddy extends EntityTameable {
 
 	private int index;
 
-	public void setIndex(int lenght) {
+	public int setIndex(int lenght) {
 		if (lenght > 0)
 			index = rand.nextInt(lenght);
 		else
 			index = 0;
+		
+		return index;
+	}
+	
+	public void forceIndex(int i){
+		index = i;
 	}
 
 	public int getTextureIndex() {

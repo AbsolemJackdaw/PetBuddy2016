@@ -17,7 +17,7 @@ public class StowOrSummonLogic {
 	public static void checkPet(EntityPlayer player) {
 		// no point in checking
 		// pets despawn when their id doesn't match the owner's saved data, and
-		// it's always different wher reloading a world
+		// it's always different when reloading a world
 
 		// TODO check configuration wether to spawn petbuddy on login or not
 	}
@@ -34,7 +34,8 @@ public class StowOrSummonLogic {
 		pet.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, inventory.getInventoryHandler().getStackInSlot(13));
 
 		pet.setModelType(inventory.getPetmodeltype());
-
+		pet.forceIndex(inventory.getSkinIndex());
+		
 		ItemStack stack = inventory.getInventoryHandler().getStackInSlot(14);
 		String tagName = !stack.isEmpty() && stack.hasDisplayName() && Items.NAME_TAG.equals(stack.getItem())
 				? stack.getDisplayName() : "";

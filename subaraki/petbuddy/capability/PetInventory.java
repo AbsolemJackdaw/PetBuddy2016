@@ -17,6 +17,7 @@ public class PetInventory {
 	private Integer currentPetID;
 	private int cooldown = 0;
 	private String petmodeltype = "default";
+	private int skinIndex = 0;
 
 	private float petHealth = 30f; //defaults to 30 if no health is saved
 
@@ -65,6 +66,7 @@ public class PetInventory {
 		tag.setInteger("cooldown", getCooldown());
 		tag.setFloat("pethealth", getPetHealth());
 		tag.setString("type", getPetmodeltype());
+		tag.setInteger("skindex", skinIndex);
 		//save mix of itemstacks and personal tags
 		return tag;
 	}
@@ -79,6 +81,7 @@ public class PetInventory {
 		setCooldown(tag.getInteger("cooldown"));
 		setPetHealth(tag.getFloat("pethealth"));
 		setPetmodeltype(tag.getString("type"));
+		setSkinIndex(tag.getInteger("skindex"));
 	}
 
 	/////////////////Getters and Setters////////////////////////////////////////////////////////////////////////
@@ -145,5 +148,13 @@ public class PetInventory {
 	
 	public String getPetmodeltype() {
 		return petmodeltype;
+	}
+	
+	public void setSkinIndex(int i){
+		skinIndex = i;
+	}
+	
+	public int getSkinIndex(){
+		return skinIndex;
 	}
 }

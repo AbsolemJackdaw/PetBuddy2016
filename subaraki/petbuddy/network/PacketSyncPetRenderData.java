@@ -46,7 +46,7 @@ public class PacketSyncPetRenderData implements IMessage {
 				EntityPlayer player = ctx.getServerHandler().playerEntity;
 				PetInventory inventory = player.getCapability(PetInventoryCapability.CAPABILITY, null);
 				inventory.setPetmodeltype(message.type);
-
+				
 				Entity e = player.world.getEntityByID(inventory.getPetID());
 				if (e != null && e instanceof EntityPetBuddy) {
 					if (!"skip".equals(message.type)) {

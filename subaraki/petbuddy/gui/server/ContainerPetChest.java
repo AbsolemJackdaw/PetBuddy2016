@@ -75,22 +75,24 @@ public class ContainerPetChest extends Container {
 		if (slotId == 14) {
 			ItemStack stack = getSlot(slotId).getStack();
 			EntityPetBuddy e = PetInventory.get(player).getPet(player);
+			int index = 0;
 			if (e != null && !stack.isEmpty()) {
 				if (stack.getItem().equals(Items.RABBIT_FOOT))
-					e.setIndex(PetForm.TEXTURE_RABBIT.length);
+					index = e.setIndex(PetForm.TEXTURE_RABBIT.length);
 				else if (stack.getItem().equals(Items.ARROW))
-					e.setIndex(PetForm.TEXTURE_SKELETON.length);
+					index = e.setIndex(PetForm.TEXTURE_SKELETON.length);
 				else if (stack.getItem().equals(Items.ROTTEN_FLESH))
-					e.setIndex(PetForm.TEXTURE_ZOMBIE.length);
+					index = e.setIndex(PetForm.TEXTURE_ZOMBIE.length);
 				else if (stack.getItem().equals(Items.BOOK))
-					e.setIndex(PetForm.TEXTURE_VILLAGER.length);
+					index = e.setIndex(PetForm.TEXTURE_VILLAGER.length);
 				else if (stack.getItem().equals(Items.COOKED_FISH))
-					e.setIndex(PetForm.TEXTURE_CATE.length);
+					index = e.setIndex(PetForm.TEXTURE_CATE.length);
 
 				else {
-					e.setIndex(0);
+					index = e.setIndex(0);
 				}
 			}
+			PetInventory.get(player).setSkinIndex(index);
 		}
 		return clicked;
 	}

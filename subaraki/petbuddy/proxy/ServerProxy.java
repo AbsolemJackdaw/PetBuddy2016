@@ -10,7 +10,7 @@ import subaraki.petbuddy.mod.PetBuddy;
 public class ServerProxy {
 
 	public void registerEntities(){
-		EntityRegistry.registerModEntity(new ResourceLocation("pet_buddy"), EntityPetBuddy.class, "pet_buddy", 0, PetBuddy.MODID, 256, 4, true);
+		EntityRegistry.registerModEntity(new ResourceLocation("petbuddy","pet_buddy"), EntityPetBuddy.class, "pet_buddy", 0, PetBuddy.MODID, 256, 4, true);
 	}
 	public World getClientWorld(){return null;}
 	public void registerRenders(){}
