@@ -25,7 +25,7 @@ public class StowOrSummonLogic {
 	public static void givePet(EntityPlayer player) {
 		EntityPetBuddy pet = new EntityPetBuddy(player.world);
 		PetInventory inventory = PetInventory.get(player);
-
+		
 		pet.setOwnerId(player.getUniqueID());
 		pet.setTamed(true);
 		pet.setLocationAndAngles(player.posX, player.posY, player.posZ, player.getRotationYawHead(),
@@ -34,7 +34,6 @@ public class StowOrSummonLogic {
 		pet.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, inventory.getInventoryHandler().getStackInSlot(13));
 
 		pet.setModelType(inventory.getPetmodeltype());
-		pet.forceIndex(inventory.getSkinIndex());
 		
 		ItemStack stack = inventory.getInventoryHandler().getStackInSlot(14);
 		String tagName = !stack.isEmpty() && stack.hasDisplayName() && Items.NAME_TAG.equals(stack.getItem())
@@ -49,6 +48,8 @@ public class StowOrSummonLogic {
 
 		inventory.setPetID(pet.getEntityId());
 
+		pet.forceIndex(inventory.getSkinIndex());
+		
 		pet.setHealth(inventory.getPetHealth() > 0 ? inventory.getPetHealth() : pet.getMaxHealth());
 		// should default to 30 if no health is saved
 

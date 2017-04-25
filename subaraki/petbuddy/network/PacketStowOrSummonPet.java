@@ -58,6 +58,7 @@ public class PacketStowOrSummonPet implements IMessage {
 				if (world.getEntityByID(petid) != null && world.getEntityByID(petid) instanceof EntityPetBuddy) {
 					EntityPetBuddy pet = (EntityPetBuddy) world.getEntityByID(petid);
 					inventory.setPetHealth(pet.getHealth());
+					inventory.setSkinIndex(pet.getTextureIndex());
 					pet.setDead();
 					inventory.setPetID((Integer) null);
 					player_mp.sendMessage(

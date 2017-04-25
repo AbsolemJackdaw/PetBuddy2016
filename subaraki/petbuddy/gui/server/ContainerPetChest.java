@@ -1,6 +1,7 @@
 package subaraki.petbuddy.gui.server;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
@@ -10,6 +11,8 @@ import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.entity.PetForm;
+import subaraki.petbuddy.network.NetworkHandler;
+import subaraki.petbuddy.network.PacketSyncOwnInventory;
 
 public class ContainerPetChest extends Container {
 
@@ -76,7 +79,7 @@ public class ContainerPetChest extends Container {
 			ItemStack stack = getSlot(slotId).getStack();
 			EntityPetBuddy e = PetInventory.get(player).getPet(player);
 			int index = 0;
-			if (e != null && !stack.isEmpty()) {
+			if (e != null && !stack.isEmpty() && !player.world.isRemote) {
 				if (stack.getItem().equals(Items.RABBIT_FOOT))
 					index = e.setIndex(PetForm.TEXTURE_RABBIT.length);
 				else if (stack.getItem().equals(Items.ARROW))
@@ -91,8 +94,9 @@ public class ContainerPetChest extends Container {
 				else {
 					index = e.setIndex(0);
 				}
+				PetInventory.get(player).setSkinIndex(index);
+				NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory(player), (EntityPlayerMP) player);
 			}
-			PetInventory.get(player).setSkinIndex(index);
 		}
 		return clicked;
 	}

@@ -41,8 +41,10 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
+import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.entity.PetForm.EnumPetform;
 import subaraki.petbuddy.entity.model.ModelBatFix;
+import subaraki.petbuddy.mod.PetBuddy;
 import subaraki.petbuddy.network.NetworkHandler;
 import subaraki.petbuddy.network.PacketSyncPetRenderData;
 

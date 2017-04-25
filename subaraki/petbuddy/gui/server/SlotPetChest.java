@@ -68,7 +68,6 @@ public class SlotPetChest extends SlotItemHandler {
 				String tagName = getStack() != null && getStack().hasDisplayName()
 						&& Items.NAME_TAG.equals(getStack().getItem()) ? getStack().getDisplayName() : "";
 				e.setNameForNameTag(tagName);
-				e.setForceRender(true);
 			}
 		}
 

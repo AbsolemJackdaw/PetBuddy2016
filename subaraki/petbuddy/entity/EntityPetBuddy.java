@@ -355,6 +355,7 @@ public class EntityPetBuddy extends EntityTameable {
 	
 	public void forceIndex(int i){
 		index = i;
+		setForceRender(true); /*needs to be forced to rerender so the model fits with the skin. most cases for zombies*/
 	}
 
 	public int getTextureIndex() {
