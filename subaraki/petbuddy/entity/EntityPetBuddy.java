@@ -164,6 +164,15 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
+		
+		//solves buddy dying from friendly fire
+		if(source.getEntity() instanceof EntityPlayer)
+			if(PetInventory.get((EntityPlayer)source.getEntity()).getPetID() == getEntityId())
+				return false;
+		if(source.getEntity() instanceof EntityTameable)
+			if(((EntityTameable)source.getEntity()).getOwnerId().equals(this.getOwnerId()))
+				return false;
+		
 		// health before attack
 		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0
 				: getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
