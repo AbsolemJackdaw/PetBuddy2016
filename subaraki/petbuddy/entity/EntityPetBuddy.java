@@ -146,10 +146,7 @@ public class EntityPetBuddy extends EntityTameable {
 		boolean flag;
 
 		//closes #9
-		if (this.getHeldItem(EnumHand.MAIN_HAND) != (ItemStack.EMPTY)) {
-			if(!(this.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemSword))
-				return victim.attackEntityFrom(DamageSource.causeMobDamage(this), 2);
-
+		if (this.getHeldItemMainhand() != null) {
 			float damage = (((ItemSword) (this.getHeldItemMainhand().getItem())).getDamageVsEntity() + 3.0f);
 			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), damage / 2f); // cannot
 			// retrieve attack damage, which is set as 3+material.damage vs entity
@@ -167,7 +164,7 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
-
+		
 		//solves buddy dying from friendly fire
 		if(source.getEntity() instanceof EntityPlayer)
 			if(PetInventory.get((EntityPlayer)source.getEntity()).getPetID() == getEntityId())
@@ -175,7 +172,7 @@ public class EntityPetBuddy extends EntityTameable {
 		if(source.getEntity() instanceof EntityTameable)
 			if(((EntityTameable)source.getEntity()).getOwnerId().equals(this.getOwnerId()))
 				return false;
-
+		
 		// health before attack
 		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0
 				: getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
@@ -245,13 +242,13 @@ public class EntityPetBuddy extends EntityTameable {
 		}
 
 		if (!player.getCapability(PetInventoryCapability.CAPABILITY, null).canAccesStorage()) {
-			if (stack.getItem() instanceof ItemBlock)
-				if (Block.getBlockFromItem(stack.getItem()).equals(Blocks.CHEST)
-						|| Block.getBlockFromItem(stack.getItem()).equals(Blocks.TRAPPED_CHEST)) {
-					player.getCapability(PetInventoryCapability.CAPABILITY, null).setHoldingChest();
-					player.getHeldItem(hand).shrink(1);
-					return true;
-				}
+				if (stack.getItem() instanceof ItemBlock)
+					if (Block.getBlockFromItem(stack.getItem()).equals(Blocks.CHEST)
+							|| Block.getBlockFromItem(stack.getItem()).equals(Blocks.TRAPPED_CHEST)) {
+						player.getCapability(PetInventoryCapability.CAPABILITY, null).setHoldingChest();
+						player.getHeldItem(hand).shrink(1);
+						return true;
+					}
 		} else {
 			getNavigator().setPath(getNavigator().getPathToEntityLiving(getOwner()), 1.0);
 			FMLNetworkHandler.openGui(player, PetBuddy.instance, 0, world, (int) player.posX, (int) player.posY,
@@ -264,14 +261,10 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	public int getTotalArmorValue() {
-		if (getItemStackFromSlot(EntityEquipmentSlot.HEAD) != ItemStack.EMPTY) {
+		if (getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null) {
 			ItemStack helm = getItemStackFromSlot(EntityEquipmentSlot.HEAD);
-
-			if(helm.getItem() instanceof ItemArmor)
-			{
-				int armorValue = ((ItemArmor) helm.getItem()).damageReduceAmount * 8;
-				return armorValue;
-			}
+			int armorValue = ((ItemArmor) helm.getItem()).damageReduceAmount * 8;
+			return armorValue;
 		}
 		return super.getTotalArmorValue();
 	}
@@ -365,10 +358,10 @@ public class EntityPetBuddy extends EntityTameable {
 			index = rand.nextInt(lenght);
 		else
 			index = 0;
-
+		
 		return index;
 	}
-
+	
 	public void forceIndex(int i){
 		index = i;
 		setForceRender(true); /*needs to be forced to rerender so the model fits with the skin. most cases for zombies*/
