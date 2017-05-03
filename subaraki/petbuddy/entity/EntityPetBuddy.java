@@ -1,7 +1,6 @@
 package subaraki.petbuddy.entity;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.EntityLivingBase;
@@ -60,7 +59,7 @@ public class EntityPetBuddy extends EntityTameable {
 	protected static final DataParameter<Boolean> UPDATE = EntityDataManager.<Boolean> createKey(EntityPetBuddy.class,
 			DataSerializers.BOOLEAN);
 
-	public ResourceLocation FRIENDSKIN = DefaultPlayerSkin.getDefaultSkinLegacy();
+	public ResourceLocation FRIENDSKIN = PetBuddy.proxy.getFriendSkin();
 
 	public EntityPetBuddy(World world) {
 		super(world);
@@ -264,7 +263,7 @@ public class EntityPetBuddy extends EntityTameable {
 
 	@Override
 	public int getTotalArmorValue() {
-		if (getItemStackFromSlot(EntityEquipmentSlot.HEAD) != ItemStack.EMPTY) {
+		if (!getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()) {
 			ItemStack helm = getItemStackFromSlot(EntityEquipmentSlot.HEAD);
 
 			if(helm.getItem() instanceof ItemArmor)

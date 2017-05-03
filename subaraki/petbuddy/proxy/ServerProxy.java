@@ -15,5 +15,6 @@ public class ServerProxy {
 	public World getClientWorld(){return null;}
 	public void registerRenders(){}
 	public EntityPlayer getClientPlayer() {return null;}
-	public void registerKey() {};
+	public void registerKey() {}
+	public ResourceLocation getFriendSkin() {return null;};
 }

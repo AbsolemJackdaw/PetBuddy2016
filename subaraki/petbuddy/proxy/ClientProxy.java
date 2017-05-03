@@ -3,8 +3,10 @@ package subaraki.petbuddy.proxy;
 import org.lwjgl.input.Keyboard;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
@@ -34,5 +36,10 @@ public class ClientProxy extends ServerProxy {
 	@Override
 	public EntityPlayer getClientPlayer() {
 		return Minecraft.getMinecraft().player;
+	}
+	
+	@Override
+	public ResourceLocation getFriendSkin() {
+		return DefaultPlayerSkin.getDefaultSkinLegacy();
 	}
 }
