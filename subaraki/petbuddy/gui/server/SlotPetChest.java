@@ -85,7 +85,7 @@ public class SlotPetChest extends SlotItemHandler {
 				if (!(stack.getItem() instanceof ItemArmor))
 					return false;
 				ItemArmor armor = (ItemArmor) stack.getItem();
-				return armor.getEquipmentSlot().equals(EntityEquipmentSlot.HEAD);
+				return armor.isValidArmor(stack, EntityEquipmentSlot.HEAD, null);//armor.getEquipmentSlot().equals(EntityEquipmentSlot.HEAD);
 			case 13:
 				if (!(stack.getItem() instanceof ItemSword))
 					return false;
