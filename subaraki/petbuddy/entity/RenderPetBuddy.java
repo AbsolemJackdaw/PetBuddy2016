@@ -184,7 +184,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 		public void doRenderLayer(EntityPetBuddy pet, float limbSwing, float limbSwingAmount,
 				float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
 			this.render.bindTexture(TEXTURE);
-			if(pet.getStackDefiningForm() != null){
+			if(!pet.getStackDefiningForm().isEmpty()){
 				float[] color = pet.getColorFromDye(EnumDyeColor.byMetadata(pet.getStackDefiningForm().getMetadata()));
 				GlStateManager.color(color[0], color[1], color[2]);
 			}

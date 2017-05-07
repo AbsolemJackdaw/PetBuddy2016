@@ -41,9 +41,9 @@ public class PacketSyncPetRenderData implements IMessage {
 
 		@Override
 		public IMessage onMessage(PacketSyncPetRenderData message, MessageContext ctx) {
-			((WorldServer) ctx.getServerHandler().playerEntity.world).addScheduledTask(() -> {
+			((WorldServer) ctx.getServerHandler().player.world).addScheduledTask(() -> {
 
-				EntityPlayer player = ctx.getServerHandler().playerEntity;
+				EntityPlayer player = ctx.getServerHandler().player;
 				PetInventory inventory = player.getCapability(PetInventoryCapability.CAPABILITY, null);
 				inventory.setPetmodeltype(message.type);
 				

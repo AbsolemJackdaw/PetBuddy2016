@@ -73,7 +73,7 @@ public class PetForm {
 
 	private static final ModelIronGolem MODEL_IRONGOLEM = new ModelIronGolem(){
 		public void setLivingAnimations(EntityLivingBase entitylivingbaseIn, float p_78086_2_, float p_78086_3_, float partialTickTime) {
-			if(entitylivingbaseIn.getHeldItemMainhand() != null){
+			if(!entitylivingbaseIn.getHeldItemMainhand().isEmpty()){
 				this.ironGolemRightArm.rotateAngleX = -0.8F + 0.025F * this.triangleWave(400f, 70.0F);
 				this.ironGolemLeftArm.rotateAngleX = 0.0F;
 			}else{
@@ -249,7 +249,7 @@ public class PetForm {
 	}
 
 	public static EnumPetform getFormFromItem(ItemStack stack){
-		if(stack == null || stack.getItem() == null)
+		if(stack.isEmpty())
 			return EnumPetform.STEVE;
 
 		for(EnumPetform form : EnumPetform.values()){

@@ -145,7 +145,7 @@ public class EntityPetBuddy extends EntityTameable {
 		boolean flag;
 
 		//closes #9
-		if (this.getHeldItem(EnumHand.MAIN_HAND) != (ItemStack.EMPTY)) {
+		if (!this.getHeldItem(EnumHand.MAIN_HAND).isEmpty()) {
 			if(!(this.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemSword))
 				return victim.attackEntityFrom(DamageSource.causeMobDamage(this), 2);
 
@@ -176,11 +176,11 @@ public class EntityPetBuddy extends EntityTameable {
 				return false;
 
 		// health before attack
-		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0
+		int armorHealth = getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty() ? 0
 				: getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
 		boolean isattacked = super.attackEntityFrom(source, amount);
 		// health after attack
-		int armorHealth2 = getItemStackFromSlot(EntityEquipmentSlot.HEAD) == null ? 0
+		int armorHealth2 = getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty() ? 0
 				: getItemStackFromSlot(EntityEquipmentSlot.HEAD).getItemDamage();
 
 		if (armorHealth2 < armorHealth)
@@ -193,11 +193,11 @@ public class EntityPetBuddy extends EntityTameable {
 	@Override
 	protected void damageArmor(float damage) {
 		float theDamage = damage / 4f < 1f ? 1f : damage / 4f;
-		if (getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null) {
+		if (!getItemStackFromSlot(EntityEquipmentSlot.HEAD).isEmpty()) {
 			getItemStackFromSlot(EntityEquipmentSlot.HEAD).damageItem((int) theDamage, this);
 
 			if (getItemStackFromSlot(EntityEquipmentSlot.HEAD).getCount() == 0) {
-				setItemStackToSlot(EntityEquipmentSlot.HEAD, null);
+				setItemStackToSlot(EntityEquipmentSlot.HEAD, ItemStack.EMPTY);
 			}
 		}
 	}
@@ -244,7 +244,7 @@ public class EntityPetBuddy extends EntityTameable {
 		}
 
 		if (!player.getCapability(PetInventoryCapability.CAPABILITY, null).canAccesStorage()) {
-			if (stack.getItem() instanceof ItemBlock)
+			if (!stack.isEmpty() && stack.getItem() instanceof ItemBlock)
 				if (Block.getBlockFromItem(stack.getItem()).equals(Blocks.CHEST)
 						|| Block.getBlockFromItem(stack.getItem()).equals(Blocks.TRAPPED_CHEST)) {
 					player.getCapability(PetInventoryCapability.CAPABILITY, null).setHoldingChest();

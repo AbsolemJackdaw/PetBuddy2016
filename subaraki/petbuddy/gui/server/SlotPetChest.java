@@ -65,7 +65,7 @@ public class SlotPetChest extends SlotItemHandler {
 			}
 
 			else if (slotId == 14) {
-				String tagName = getStack() != null && getStack().hasDisplayName()
+				String tagName = !getStack().isEmpty() && getStack().hasDisplayName()
 						&& Items.NAME_TAG.equals(getStack().getItem()) ? getStack().getDisplayName() : "";
 				e.setNameForNameTag(tagName);
 			}

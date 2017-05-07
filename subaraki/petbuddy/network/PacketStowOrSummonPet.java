@@ -32,8 +32,8 @@ public class PacketStowOrSummonPet implements IMessage {
 
 		@Override
 		public IMessage onMessage(PacketStowOrSummonPet message, MessageContext ctx) {
-			((WorldServer) ctx.getServerHandler().playerEntity.world).addScheduledTask(() -> {
-				EntityPlayerMP player_mp = ctx.getServerHandler().playerEntity;
+			((WorldServer) ctx.getServerHandler().player.world).addScheduledTask(() -> {
+				EntityPlayerMP player_mp = ctx.getServerHandler().player;
 				PetInventory inventory = PetInventory.get((EntityPlayer) player_mp);
 				World world = player_mp.world;
 

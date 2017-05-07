@@ -77,7 +77,7 @@ public class GuiPetChest extends GuiContainer {
 		int posX = (this.width - xSize) / 2;
 		int posY = (this.height - ySize) / 2;
 		drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);
-		drawString(fontRendererObj, "Pet Chest", posX+7, posY+6, 0xffffff);
+		drawString(fontRenderer, "Pet Chest", posX+7, posY+6, 0xffffff);
 
 		if(petToRender != null)
 			DrawEntityOnScreen.drawEntityOnScreen(
