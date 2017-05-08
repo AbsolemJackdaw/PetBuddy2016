@@ -1,12 +1,10 @@
 package subaraki.petbuddy.hooks;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.network.NetworkHandler;

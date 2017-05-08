@@ -12,7 +12,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelEnderman;
 import net.minecraft.client.model.ModelIronGolem;
-import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelQuadruped;
 import net.minecraft.client.model.ModelSheep1;
 import net.minecraft.client.model.ModelSheep2;
@@ -41,10 +40,8 @@ import net.minecraft.util.EnumHandSide;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
-import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.entity.PetForm.EnumPetform;
 import subaraki.petbuddy.entity.model.ModelBatFix;
-import subaraki.petbuddy.mod.PetBuddy;
 import subaraki.petbuddy.network.NetworkHandler;
 import subaraki.petbuddy.network.PacketSyncPetRenderData;
 
