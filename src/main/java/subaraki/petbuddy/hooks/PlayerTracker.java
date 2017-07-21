@@ -61,8 +61,8 @@ public class PlayerTracker {
 	}
 
 	@SubscribeEvent
-	public void onCapabilityAttach(AttachCapabilitiesEvent.Entity event){
-		final Entity entity = event.getEntity();
+	public void onCapabilityAttach(AttachCapabilitiesEvent event){
+		final Object entity = event.getObject();
 
 		if (entity instanceof EntityPlayer)
 			event.addCapability(CapabilityProviderPetBuddy.KEY, new CapabilityProviderPetBuddy((EntityPlayer)entity)); 
