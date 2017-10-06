@@ -287,6 +287,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 				GlStateManager.rotate(-90.0F, 1.0F, 0.0F, 0.0F);
 				GlStateManager.rotate(180.0F, 0.0F, 1.0F, 0.0F);
 				float scale[] = pet.getForm().getSwordOffset();
+				scale = new float[]{-9,0,-16};
 				GlStateManager.translate(scale[0]/16.0F,scale[1]/16.0F,scale[2]/16.0F);
 				GlStateManager.rotate(35.0F, 1.0F, 0.0F, 0.0F);
 				Minecraft.getMinecraft().getItemRenderer().renderItemSide(pet, stack, cameraTransform, false);
@@ -311,6 +312,8 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 			return someFloat+=0.8f;
 		else if(livingBase.getForm().equals(EnumPetform.DOGE))
 			return 8f;
+		else if (livingBase.getForm().equals(EnumPetform.GUARDIAN))
+			return someFloat+=0.1f;
 
 		return 0f;
 	}

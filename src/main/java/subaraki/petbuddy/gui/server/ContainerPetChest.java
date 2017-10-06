@@ -11,6 +11,7 @@ import subaraki.petbuddy.capability.PetInventory;
 import subaraki.petbuddy.capability.PetInventoryCapability;
 import subaraki.petbuddy.entity.EntityPetBuddy;
 import subaraki.petbuddy.entity.PetForm;
+import subaraki.petbuddy.entity.PetForm.EnumPetform;
 import subaraki.petbuddy.network.NetworkHandler;
 import subaraki.petbuddy.network.PacketSyncOwnInventory;
 
@@ -80,20 +81,18 @@ public class ContainerPetChest extends Container {
 			EntityPetBuddy e = PetInventory.get(player).getPet(player);
 			int index = 0;
 			if (e != null && !stack.isEmpty() && !player.world.isRemote) {
-				if (stack.getItem().equals(Items.RABBIT_FOOT))
-					index = e.setIndex(PetForm.TEXTURE_RABBIT.length);
-				else if (stack.getItem().equals(Items.ARROW))
-					index = e.setIndex(PetForm.TEXTURE_SKELETON.length);
-				else if (stack.getItem().equals(Items.ROTTEN_FLESH))
-					index = e.setIndex(PetForm.TEXTURE_ZOMBIE.length);
-				else if (stack.getItem().equals(Items.BOOK))
-					index = e.setIndex(PetForm.TEXTURE_VILLAGER.length);
-				else if (stack.getItem().equals(Items.COOKED_FISH))
-					index = e.setIndex(PetForm.TEXTURE_CATE.length);
 
-				else {
+				EnumPetform form = PetForm.getFormFromItem(stack);
+
+				if(form.hasMultiTexture())
+				{
+					index = e.setIndex(form.getReslocArray().length);
+				}
+				else 
+				{
 					index = e.setIndex(0);
 				}
+				
 				PetInventory.get(player).setSkinIndex(index);
 				NetworkHandler.NETWORK.sendTo(new PacketSyncOwnInventory(player), (EntityPlayerMP) player);
 			}

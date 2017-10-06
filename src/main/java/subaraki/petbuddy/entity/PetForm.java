@@ -11,6 +11,7 @@ import net.minecraft.client.model.ModelEnderMite;
 import net.minecraft.client.model.ModelEnderman;
 import net.minecraft.client.model.ModelGhast;
 import net.minecraft.client.model.ModelIronGolem;
+import net.minecraft.client.model.ModelParrot;
 import net.minecraft.client.model.ModelPig;
 import net.minecraft.client.model.ModelPlayer;
 import net.minecraft.client.model.ModelPolarBear;
@@ -31,8 +32,11 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import subaraki.petbuddy.entity.model.ModelBatFix;
+import subaraki.petbuddy.entity.model.ModelGuardianFix;
+import subaraki.petbuddy.entity.model.ModelLlamaFix;
 import subaraki.petbuddy.entity.model.ModelOcelotFix;
 import subaraki.petbuddy.entity.model.ModelRabbitFix;
+import subaraki.petbuddy.entity.model.ModelShulkerFix;
 import subaraki.petbuddy.entity.model.ModelSkeletonFix;
 import subaraki.petbuddy.entity.model.ModelZombieVillagerFix;
 
@@ -130,6 +134,10 @@ public class PetForm {
 	private static final ModelSnowMan MODEL_SNOWMAN = new ModelSnowMan();
 	private static final ModelOcelotFix MODEL_CATE = new ModelOcelotFix();
 	private static final ModelWitch MODEL_WITCH = new ModelWitch(0);
+	private static final ModelShulkerFix MODEL_SHULKER = new ModelShulkerFix();
+	private static final ModelParrot MODEL_PARROT = new ModelParrot();
+	private static final ModelLlamaFix MODEL_LLAMA= new ModelLlamaFix(0.7f);
+	private static final ModelGuardianFix MODEL_GUARDIAN= new ModelGuardianFix();
 
 	private static final ResourceLocation TEXTURE_SHEEP = new ResourceLocation("textures/entity/sheep/sheep.png");
 	private static final ResourceLocation TEXTURE_HUSK = new ResourceLocation("textures/entity/zombie/husk.png");
@@ -153,6 +161,7 @@ public class PetForm {
 	private static final ResourceLocation TEXTURE_SNOW_MAN = new ResourceLocation("textures/entity/snowman.png");
 	private static final ResourceLocation TEXTURE_WITCH = new ResourceLocation("textures/entity/witch.png");
 	private static final ResourceLocation TEXTURE_DOGE = new ResourceLocation("textures/entity/wolf/wolf.png");
+    private static final ResourceLocation GUARDIAN_TEXTURE = new ResourceLocation("textures/entity/guardian.png");
 
 	public static final ResourceLocation[] TEXTURE_RABBIT = new ResourceLocation[]{
 			new ResourceLocation("textures/entity/rabbit/brown.png"),
@@ -191,6 +200,37 @@ public class PetForm {
 			new ResourceLocation("textures/entity/cat/red.png"),
 			new ResourceLocation("textures/entity/cat/siamese.png")
 	};
+	public static final ResourceLocation[] TEXTURE_SHULKER = new ResourceLocation[] {
+			new ResourceLocation("textures/entity/shulker/shulker_white.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_orange.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_magenta.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_light_blue.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_yellow.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_lime.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_pink.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_gray.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_silver.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_cyan.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_purple.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_blue.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_brown.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_green.png"),
+			new ResourceLocation("textures/entity/shulker/shulker_red.png"), 
+			new ResourceLocation("textures/entity/shulker/shulker_black.png")
+	};
+	public static final ResourceLocation[] TEXTURE_PARROT = new ResourceLocation[] {
+			new ResourceLocation("textures/entity/parrot/parrot_red_blue.png"),
+			new ResourceLocation("textures/entity/parrot/parrot_blue.png"), 
+			new ResourceLocation("textures/entity/parrot/parrot_green.png"), 
+			new ResourceLocation("textures/entity/parrot/parrot_yellow_blue.png"),
+			new ResourceLocation("textures/entity/parrot/parrot_grey.png")
+	};
+	private static final ResourceLocation[] LLAMA_TEXTURES = new ResourceLocation[] {
+			new ResourceLocation("textures/entity/llama/llama_creamy.png"),
+			new ResourceLocation("textures/entity/llama/llama_white.png"),
+			new ResourceLocation("textures/entity/llama/llama_brown.png"),
+			new ResourceLocation("textures/entity/llama/llama_gray.png")
+	};
 
 	public static ModelBase getModelForForm(EntityPetBuddy entity){
 		switch (entity.getForm()){
@@ -209,18 +249,19 @@ public class PetForm {
 	 * EntityPetBuddy argument needed for player skin
 	 * */
 	public static ResourceLocation getTextureForModel(EntityPetBuddy entity){
+
+		if(entity.getForm().hasMultiTexture() && entity.getTextureIndex() < entity.getForm().getReslocArray().length)
+			return entity.getForm().getReslocArray()[entity.getTextureIndex()];
+
 		switch (entity.getForm()) {
-		case ZOMBIE: return TEXTURE_ZOMBIE[entity.getTextureIndex()];
-		case SKELETON : return TEXTURE_SKELETON[entity.getTextureIndex()];
-		case VILLAGER : return TEXTURE_VILLAGER[entity.getTextureIndex()];
-		case RABBIT : return TEXTURE_RABBIT[entity.getTextureIndex()];
-		case CATE : return TEXTURE_CATE[entity.getTextureIndex()];
-		case FRIEND : return entity.FRIENDSKIN;
+		case FRIEND : 
+			return entity.FRIENDSKIN;
 		case STEVE: 
 			if(entity.getOwner() != null && ((EntityPlayer)entity.getOwner()) instanceof AbstractClientPlayer)
 				return ((AbstractClientPlayer)entity.getOwner()).getLocationSkin();
 
-		default : return entity.getForm().getResloc();
+		default : 
+			return entity.getForm().getResloc();
 		}
 	}
 
@@ -264,10 +305,10 @@ public class PetForm {
 	}
 
 	public static enum EnumPetform{
-		STEVE(null, MODEL_BIPED, null, (ItemStack[])null),
+		STEVE((ResourceLocation)null, MODEL_BIPED, null, (ItemStack[])null),
 		SHEEP(TEXTURE_SHEEP, MODEL_SHEEP2, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Blocks.WOOL)}),
-		ZOMBIE(null, MODEL_BIPED, null, new ItemStack[]{new ItemStack(Items.ROTTEN_FLESH)}),
-		SKELETON(null, MODEL_SKELETON, null,  new ItemStack[]{new ItemStack(Items.ARROW)}),
+		ZOMBIE(TEXTURE_ZOMBIE, MODEL_BIPED, null, new ItemStack[]{new ItemStack(Items.ROTTEN_FLESH)}),
+		SKELETON(TEXTURE_SKELETON, MODEL_SKELETON, null,  new ItemStack[]{new ItemStack(Items.ARROW)}),
 		PIG(TEXTURE_PIG, MODEL_PIG, new float[]{7,6,-15}, new ItemStack[]{new ItemStack(Items.PORKCHOP)}),
 		COW(TEXTURE_COW, MODEL_COW, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Items.LEATHER), new ItemStack(Items.BEEF)}),
 		SQUID(TEXTURE_SQUID, MODEL_SQUID, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Items.DYE,1,0)}),
@@ -279,24 +320,31 @@ public class PetForm {
 		MOOSHROOM(TEXTURE_MOOSHROOM, MODEL_COW, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Blocks.BROWN_MUSHROOM), new ItemStack(Blocks.RED_MUSHROOM)}),
 		BAT(TEXTURE_BAT, MODEL_BAT, new float[]{0f, 2,-20}, new ItemStack[]{new ItemStack(Items.COOKIE)}),
 		POLARBEAR(TEXTURE_POLARBEAR, MODEL_POLARBEAR, new float[]{7,6,-9}, new ItemStack[]{new ItemStack(Items.FISH,1,0), new ItemStack(Items.FISH, 1, 1)}),
-		VILLAGER(null, MODEL_VILLAGER, new float[]{-0.5f,6.5f,-6.5f}, new ItemStack[]{new ItemStack(Items.BOOK)}),
+		VILLAGER(TEXTURE_VILLAGER, MODEL_VILLAGER, new float[]{-0.5f,6.5f,-6.5f}, new ItemStack[]{new ItemStack(Items.BOOK)}),
 		ENDERMAN(TEXTURE_ENDERMAN, MODEL_ENDERMAN, new float[]{0, 2, -25}, new ItemStack[]{new ItemStack(Items.ENDER_PEARL), new ItemStack(Items.ENDER_EYE)}),
 		CREEPER(TEXTURE_CREEPER, MODEL_CREEPER, new float[]{4,3f,-10}, new ItemStack[]{new ItemStack(Items.GUNPOWDER)}),
-		RABBIT(null, MODEL_RABBIT, new float[]{3,0,-20}, new ItemStack[]{new ItemStack(Items.RABBIT_FOOT)}),
+		RABBIT(TEXTURE_RABBIT, MODEL_RABBIT, new float[]{3,0,-20}, new ItemStack[]{new ItemStack(Items.RABBIT_FOOT)}),
 		ZOMBIEPIGMAN(TEXTURE_PIGMAN, MODEL_BIPED, null, new ItemStack[]{new ItemStack(Items.NETHER_WART)}),
 		ENDERMITE(TEXTURE_ENDERMITE, MODEL_ENDERMITE, new float[]{0,0,-18}, new ItemStack[]{new ItemStack(Blocks.END_STONE)}),
 		SILVERFISH(TEXTURE_SILVERFISH, MODEL_SILVERFISH, new float[]{0,0,-18}, new ItemStack[]{new ItemStack(Blocks.STONEBRICK)}),
 		IRONGOLEM(TEXTURE_IRON_GOLEM, MODEL_IRONGOLEM, new float[]{11,4,-25}, new ItemStack[]{new ItemStack(Blocks.RED_FLOWER)}),
 		SNOWMAN(TEXTURE_SNOW_MAN, MODEL_SNOWMAN, new float[]{10,2,-3}, new ItemStack[]{new ItemStack(Blocks.SNOW)}),
-		CATE(null, MODEL_CATE, new float[]{0,-1,-12}, new ItemStack[]{new ItemStack(Items.COOKED_FISH,1,0), new ItemStack(Items.COOKED_FISH, 1, 1)}),
+		CATE(TEXTURE_CATE, MODEL_CATE, new float[]{0,-1,-12}, new ItemStack[]{new ItemStack(Items.COOKED_FISH,1,0), new ItemStack(Items.COOKED_FISH, 1, 1)}),
 		WITCH(TEXTURE_WITCH, MODEL_WITCH, new float[]{-0.5f,6.5f,-6.5f}, new ItemStack[]{new ItemStack(Items.POTIONITEM)}),
 		DOGE(TEXTURE_DOGE, MODEL_DOGE, new float[]{4,0,-12}, new ItemStack[]{new ItemStack(Items.BONE)}),
-		FRIEND(null, null, null, new ItemStack[]{new ItemStack(Items.NAME_TAG)});
+		FRIEND((ResourceLocation)null, null, null, new ItemStack[]{new ItemStack(Items.NAME_TAG)}),
+		SHULKER(TEXTURE_SHULKER, MODEL_SHULKER, new float[]{-9,0,-16},  new ItemStack[]{new ItemStack(Items.CHORUS_FRUIT)}),
+		PARROT(TEXTURE_PARROT, MODEL_PARROT, new float[]{-3,5,-20},  new ItemStack[]{new ItemStack(Items.WHEAT_SEEDS),new ItemStack(Items.PUMPKIN_SEEDS),new ItemStack(Items.BEETROOT_SEEDS),new ItemStack(Items.MELON_SEEDS)}),
+		LLAMA(LLAMA_TEXTURES, MODEL_LLAMA, new float[]{7,6,-9},  new ItemStack[]{new ItemStack(Blocks.CARPET)}),
+		GUARDIAN(GUARDIAN_TEXTURE, MODEL_GUARDIAN, new float[]{0,0,0},  new ItemStack[]{new ItemStack(Items.PRISMARINE_SHARD)});
 
 		private ResourceLocation resloc;
+		private ResourceLocation[] reslocArray;
 		private ModelBase model;
 		private ItemStack[] itemstacks;
 		private float[] swordoffset;
+
+		private boolean multitexture;
 
 		private EnumPetform(ResourceLocation resloc, ModelBase model, float[] swordOffset, ItemStack... stack){
 			this.resloc = resloc;
@@ -305,8 +353,20 @@ public class PetForm {
 			this.swordoffset = swordOffset;
 		}
 
+		private EnumPetform(ResourceLocation[] reslocArray, ModelBase model, float[] swordOffset, ItemStack... stack){
+			this.multitexture = true;
+			this.reslocArray = reslocArray;
+			this.model = model;
+			this.itemstacks = stack;
+			this.swordoffset = swordOffset;
+		}
+
 		public ResourceLocation getResloc() {
 			return resloc;
+		}
+
+		public ResourceLocation[] getReslocArray() {
+			return reslocArray;
 		}
 
 		public ModelBase getModel() {
@@ -319,6 +379,10 @@ public class PetForm {
 
 		public float[] getSwordOffset() {
 			return swordoffset;
+		}
+
+		public boolean hasMultiTexture(){
+			return multitexture;
 		}
 	}
 }
