@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import subaraki.petbuddy.capability.PetInventoryCapability;
+import subaraki.petbuddy.entity.handler.EntityHandler;
 import subaraki.petbuddy.gui.GuiHandler;
 import subaraki.petbuddy.gui.handler.KeyHandler;
 import subaraki.petbuddy.hooks.CoolDownTracker;
@@ -44,7 +45,8 @@ public class PetBuddy {
 		
 		instance = this;
 		
-		proxy.registerEntities();
+		new EntityHandler();
+		
 		proxy.registerRenders();
 		proxy.registerKey();
 		
