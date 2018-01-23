@@ -167,10 +167,11 @@ public class EntityPetBuddy extends EntityTameable {
 	@Override
 	public boolean attackEntityFrom(DamageSource source, float amount) {
 
-		Integer petID = PetInventory.get((EntityPlayer)source.getTrueSource()).getPetID();
-		
+		Integer petID = null;
+
 		//solves buddy dying from friendly fire
 		if(source.getTrueSource() instanceof EntityPlayer)
+			petID = PetInventory.get((EntityPlayer)source.getTrueSource()).getPetID();
 			if(petID != null && petID.intValue() == getEntityId())
 				return false;
 		if(source.getTrueSource() instanceof EntityTameable)
