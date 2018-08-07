@@ -24,20 +24,33 @@ import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
+import net.minecraft.init.PotionTypes;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.EnumDyeColor;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemLingeringPotion;
+import net.minecraft.item.ItemPotion;
+import net.minecraft.item.ItemSplashPotion;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemSword;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.potion.PotionHelper;
+import net.minecraft.potion.PotionType;
+import net.minecraft.potion.PotionUtils;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.datafix.fixes.PotionItems;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.network.internal.FMLNetworkHandler;
 import subaraki.petbuddy.capability.PetInventory;
@@ -71,6 +84,12 @@ public class EntityPetBuddy extends EntityTameable {
 		this.tasks.addTask(5, new EntityAILeapAtTarget(this, 0.4F));
 		this.tasks.addTask(6, new EntityAIWatchClosest(this, Entity.class, 5.0F));
 		this.tasks.addTask(7, new EntityAILookIdle(this));
+	}
+
+	public EntityPetBuddy(World world, float baseHealth) {
+		this(world);
+		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(baseHealth);
+		System.out.println(baseHealth);
 	}
 
 	///// INITS/////
@@ -149,7 +168,7 @@ public class EntityPetBuddy extends EntityTameable {
 			if(!(this.getHeldItem(EnumHand.MAIN_HAND).getItem() instanceof ItemSword))
 				return victim.attackEntityFrom(DamageSource.causeMobDamage(this), 2);
 
-			float damage = (((ItemSword) (this.getHeldItemMainhand().getItem())).getDamageVsEntity() + 3.0f);
+			float damage = (((ItemSword) (this.getHeldItemMainhand().getItem())).getAttackDamage() + 3.0f);
 			flag = victim.attackEntityFrom(DamageSource.causeMobDamage(this), damage / 2f); // cannot
 			// retrieve attack damage, which is set as 3+material.damage vs entity
 			if (flag && getMaster() != null) {
@@ -172,8 +191,8 @@ public class EntityPetBuddy extends EntityTameable {
 		//solves buddy dying from friendly fire
 		if(source.getTrueSource() instanceof EntityPlayer)
 			petID = PetInventory.get((EntityPlayer)source.getTrueSource()).getPetID();
-			if(petID != null && petID.intValue() == getEntityId())
-				return false;
+		if(petID != null && petID.intValue() == getEntityId())
+			return false;
 		if(source.getTrueSource() instanceof EntityTameable)
 			if(((EntityTameable)source.getTrueSource()).getOwnerId().equals(this.getOwnerId()))
 				return false;
@@ -215,6 +234,7 @@ public class EntityPetBuddy extends EntityTameable {
 			return false;
 
 		if (!stack.isEmpty())
+		{
 			if (stack.getItem().equals(Items.SADDLE)) {
 				if (!this.isRiding()) {
 					this.startRiding(player);
@@ -239,8 +259,77 @@ public class EntityPetBuddy extends EntityTameable {
 						world.spawnParticle(EnumParticleTypes.HEART, posX, posY + 0.5f, posZ, 0, 0, 0, new int[0]);
 				}
 				return true;
-			}
+			} else if (stack.getItem()instanceof ItemPotion) {
 
+				PotionType potion = PotionUtils.getPotionTypeFromNBT(stack.getTagCompound());
+
+				if(!potion.equals(PotionTypes.HEALING))
+					return false;
+				
+				if(getMaster() != null)
+				{
+					PetInventory data = getMaster().getCapability(PetInventoryCapability.CAPABILITY, null);
+					
+					//lingering potion allows for high health upgrade
+					if(stack.getItem() instanceof ItemLingeringPotion)
+					{
+						if(!data.getHealthUpgrade_2() && data.getHealthUpgrade_1())
+						{
+							data.upgradeHealth_2();
+							this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(80);
+
+							if(!world.isRemote)
+							{
+								//green particle effect like growing saplings
+								world.playEvent(2005, getPosition(), 0);
+							}
+
+							if(world.isRemote)
+							{
+								world.playSound(player, getPosition(), SoundEvents.BLOCK_ENDERCHEST_OPEN , SoundCategory.BLOCKS, 1.0f, rand.nextFloat()+0.7f);
+								world.playSound(player, getPosition(), SoundEvents.ENTITY_ENDERDRAGON_GROWL , SoundCategory.BLOCKS, 0.8f, 4.0f);
+
+								for(int i = 0 ; i < 50 ; i++)
+									world.spawnParticle(EnumParticleTypes.REDSTONE, posX+rand.nextFloat()-0.5, posY + rand.nextFloat(), posZ+rand.nextFloat()-0.5, rand.nextFloat()/2 + 0.2, 0, rand.nextFloat()/2f+0.1, new int[0]);
+							}
+							heal(80);
+							data.setPetHealth(80);
+							
+							stack.shrink(1);
+						}
+						return true;
+					}
+					//regular potion allows for a base health upgrade 
+					else if (!(stack.getItem() instanceof ItemSplashPotion))			
+					{
+						if(!data.getHealthUpgrade_1() && !data.getHealthUpgrade_2())
+						{
+							data.upgradeHealth_1();
+							this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(40);
+							
+							if(!world.isRemote)
+							{
+								//green particle effect like growing saplings
+								world.playEvent(2005, getPosition(), 0);
+							}
+
+							if(world.isRemote)
+							{
+								world.playSound(player, getPosition(), SoundEvents.BLOCK_ANVIL_PLACE , SoundCategory.BLOCKS, 1.0f, rand.nextFloat()+0.7f);
+								world.playSound(player, getPosition(), SoundEvents.ENTITY_PLAYER_LEVELUP , SoundCategory.BLOCKS, 0.8f, rand.nextFloat()/2f + 0.5f);
+
+								for(int i = 0 ; i < 50 ; i++)
+									world.spawnParticle(EnumParticleTypes.REDSTONE, posX+rand.nextFloat()-0.5, posY + rand.nextFloat(), posZ+rand.nextFloat()-0.5, 0, 0f, 0, new int[0]);
+							}
+							heal(40);
+							data.setPetHealth(40);
+							stack.shrink(1);
+						}
+						return true;
+					}
+				}
+			}
+		}
 		if (this.isRiding()) {
 			this.dismountRidingEntity();
 			return true;

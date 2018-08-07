@@ -21,8 +21,12 @@ public class StowOrSummonLogic {
 	}
 
 	public static void givePet(EntityPlayer player) {
-		EntityPetBuddy pet = new EntityPetBuddy(player.world);
+		
 		PetInventory inventory = PetInventory.get(player);
+
+		float baseHealth = inventory.getHealthUpgrade_2() ? 80 : inventory.getHealthUpgrade_1() ? 40 : 30;
+
+		EntityPetBuddy pet = new EntityPetBuddy(player.world, baseHealth);
 		
 		pet.setOwnerId(player.getUniqueID());
 		pet.setTamed(true);

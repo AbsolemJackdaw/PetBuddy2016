@@ -38,7 +38,7 @@ public class PacketStowOrSummonPet implements IMessage {
 				World world = player_mp.world;
 
 				Integer petid = inventory.getPetID();
-
+				
 				if (petid == null)
 					if (inventory.hasCooldown()) {
 						float ticks = inventory.getCooldown();

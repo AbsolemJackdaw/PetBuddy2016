@@ -79,7 +79,7 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 			//Set texture only once
 			if(entity.getNameFromTag().length() > 1){
 
-				GameProfile profile = TileEntitySkull.updateGameprofile(new GameProfile((UUID)null, entity.getNameFromTag()));
+				GameProfile profile = TileEntitySkull.updateGameProfile(new GameProfile((UUID)null, entity.getNameFromTag()));
 
 				ResourceLocation resourcelocation = DefaultPlayerSkin.getDefaultSkinLegacy();
 
@@ -135,7 +135,8 @@ public class RenderPetBuddy extends RenderBiped<EntityPetBuddy> implements IRend
 	@Override
 	protected void renderEntityName(EntityPetBuddy entityIn, double x, double y, double z, String name,
 			double p_188296_9_) {
-		String format = entityIn.getHealth() > entityIn.getMaxHealth()*(2f/3f) ? ChatFormatting.GREEN+"" : entityIn.getHealth() > entityIn.getMaxHealth()*(1f/3f) ? TextFormatting.GOLD+"" : ""+TextFormatting.RED;
+		String format = entityIn.getHealth() > entityIn.getMaxHealth()*(2f/3f) ? ChatFormatting.GREEN+"" : entityIn.getHealth() > entityIn.getMaxHealth()*(1f/3f) ? TextFormatting.GOLD+"" : entityIn.getHealth() > 10 ? ""+TextFormatting.DARK_RED : ""+TextFormatting.RED;
+		
 		super.renderEntityName(entityIn, x, y, z, format+name, p_188296_9_);
 	}
 	private void clearLayers(){

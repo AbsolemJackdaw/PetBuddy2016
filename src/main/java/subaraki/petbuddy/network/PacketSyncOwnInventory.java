@@ -19,18 +19,21 @@ public class PacketSyncOwnInventory implements IMessage {
 	public ItemStack stack[] = new ItemStack[3];
 	public String petid;
 	public int skinIndex;
+	public boolean [] upgrades = new boolean [2];
 
 	public PacketSyncOwnInventory() {
 	}
 
 	public PacketSyncOwnInventory(EntityPlayer player) {
-		PetInventory inv = player.getCapability(PetInventoryCapability.CAPABILITY, null);
+		PetInventory data = player.getCapability(PetInventoryCapability.CAPABILITY, null);
 
-		petid = inv.getPetID() == null ? "null" : Integer.toString(inv.getPetID());
-		skinIndex = inv.getSkinIndex();
+		petid = data.getPetID() == null ? "null" : Integer.toString(data.getPetID());
+		skinIndex = data.getSkinIndex();
+		upgrades[0] = data.getHealthUpgrade_1();
+		upgrades[1] = data.getHealthUpgrade_2();
 		
 		for(int i = 0; i < stack.length; i ++)
-			stack[i] = inv.getInventoryHandler().getStackInSlot(12+i);
+			stack[i] = data.getInventoryHandler().getStackInSlot(12+i);
 	}
 
 	@Override
@@ -40,6 +43,7 @@ public class PacketSyncOwnInventory implements IMessage {
 		for (int i = 0; i < stack.length; i++){
 			stack[i] = ByteBufUtils.readItemStack(buf);
 		}
+		upgrades = new boolean[] {buf.readBoolean(), buf.readBoolean()};
 	}
 
 	@Override
@@ -49,6 +53,8 @@ public class PacketSyncOwnInventory implements IMessage {
 		for (int i = 0; i < stack.length; i++) {
 			ByteBufUtils.writeItemStack(buf, stack[i]);
 		}
+		buf.writeBoolean(upgrades[0]);
+		buf.writeBoolean(upgrades[1]);
 	}
 
 	public static class PacketSyncOwnInventoryHandler implements IMessageHandler<PacketSyncOwnInventory, IMessage>{
@@ -61,24 +67,29 @@ public class PacketSyncOwnInventory implements IMessage {
 				if(player == null)
 					return;
 
-				PetInventory inv = player.getCapability(PetInventoryCapability.CAPABILITY, null);
+				PetInventory data = player.getCapability(PetInventoryCapability.CAPABILITY, null);
 
-				inv.setSkinIndex(message.skinIndex);
+				data.setSkinIndex(message.skinIndex);
 				
 				String id = message.petid;
 				if(id.equals("null"))
-					inv.setPetID(null);
+					data.setPetID(null);
 				else{
-					inv.setPetID(Integer.parseInt(id));
+					data.setPetID(Integer.parseInt(id));
 					Entity e = player.world.getEntityByID(Integer.parseInt(id));
 
 					if(e instanceof EntityPetBuddy){
-						((EntityPetBuddy)e).forceIndex(inv.getSkinIndex());
+						((EntityPetBuddy)e).forceIndex(data.getSkinIndex());
 					}
 				}
 				for (int i = 0; i < message.stack.length; i++){
-					inv.setStackInSlot(12+i,message.stack[i]);
+					data.setStackInSlot(12+i,message.stack[i]);
 				}
+				
+				if(message.upgrades[0])
+					data.upgradeHealth_1();
+				if(message.upgrades[1])
+					data.upgradeHealth_2();
 			});
 			return null;
 		}

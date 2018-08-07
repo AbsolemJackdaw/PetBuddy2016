@@ -16,7 +16,10 @@ public class PetInventory {
 	private int cooldown = 0;
 	private String petmodeltype = "default";
 	private int skinIndex = 0;
-
+	
+	private boolean healthUpgrade_1 = false;
+	private boolean healthUpgrade_2 = false;
+	
 	private float petHealth = 30f; //defaults to 30 if no health is saved
 
 	private boolean holdsChest = false;
@@ -24,7 +27,7 @@ public class PetInventory {
 	public PetInventory(){
 		inventory = new PetStackHandler();
 	}
-
+	
 	public EntityPlayer getPlayer() { 
 		return player; 
 	}
@@ -65,6 +68,9 @@ public class PetInventory {
 		tag.setFloat("pethealth", getPetHealth());
 		tag.setString("type", getPetmodeltype());
 		tag.setInteger("skindex", skinIndex);
+		tag.setBoolean("upgradeHealth1", healthUpgrade_1);
+		tag.setBoolean("upgradeHealth2", healthUpgrade_2);
+
 		//save mix of itemstacks and personal tags
 		return tag;
 	}
@@ -80,6 +86,10 @@ public class PetInventory {
 		setPetHealth(tag.getFloat("pethealth"));
 		setPetmodeltype(tag.getString("type"));
 		setSkinIndex(tag.getInteger("skindex"));
+		if(tag.getBoolean("upgradeHealth1"))
+			upgradeHealth_1();
+		if(tag.getBoolean("upgradeHealth2"))
+			upgradeHealth_2();
 	}
 
 	/////////////////Getters and Setters////////////////////////////////////////////////////////////////////////
@@ -154,5 +164,21 @@ public class PetInventory {
 	
 	public int getSkinIndex(){
 		return skinIndex;
+	}
+
+	public boolean getHealthUpgrade_1() {
+		return healthUpgrade_1;
+	}
+	
+	public void upgradeHealth_1() {
+		healthUpgrade_1 = true;
+	}
+	
+	public boolean getHealthUpgrade_2() {
+		return healthUpgrade_2;
+	}
+	
+	public void upgradeHealth_2() {
+		healthUpgrade_2 = true;
 	}
 }

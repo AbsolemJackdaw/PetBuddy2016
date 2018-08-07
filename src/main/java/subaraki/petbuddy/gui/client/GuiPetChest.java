@@ -18,13 +18,18 @@ import subaraki.petbuddy.network.PacketSyncPetRenderData;
 
 public class GuiPetChest extends GuiContainer {
 
-	private static final ResourceLocation gui = new ResourceLocation(PetBuddy.MODID, "textures/gui/petchest.png"); 
+	private static final ResourceLocation gui = new ResourceLocation(PetBuddy.MODID, "textures/gui/petchest.png");
+	private static final ResourceLocation hearts = new ResourceLocation("textures/gui/container/inventory.png"); 
+	private static final ResourceLocation icons = new ResourceLocation("textures/gui/icons.png"); 
+
 	private float oldMouseX;
 	private float oldMouseY;
 	EntityPetBuddy petToRender = null;
+	PetInventory data = null;
 	public GuiPetChest(EntityPlayer player) {
 		super(new ContainerPetChest(player));
-		petToRender = PetInventory.get(player).getPet(player);
+		data = PetInventory.get(player);
+		petToRender = data.getPet(player);
 	}
 
 	@Override
@@ -32,7 +37,7 @@ public class GuiPetChest extends GuiContainer {
 		super.initGui();
 		tryToDrawModeltypeButton();
 	}
-	
+
 	@Override
 	protected void mouseReleased(int mouseX, int mouseY, int state) {
 		super.mouseReleased(mouseX, mouseY, state);
@@ -78,6 +83,20 @@ public class GuiPetChest extends GuiContainer {
 		int posY = (this.height - ySize) / 2;
 		drawTexturedModalRect(posX, posY, 0, 0, xSize, ySize);
 		drawString(fontRenderer, "Pet Chest", posX+7, posY+6, 0xffffff);
+
+		this.mc.renderEngine.bindTexture(icons);
+		drawTexturedModalRect(posX + 84, posY + 54, 34, 0, 9, 9);
+
+		if(data != null && data.getHealthUpgrade_1())
+		{	
+			this.mc.renderEngine.bindTexture(hearts);
+			drawTexturedModalRect(posX + 80, posY + 50, 126, 199, 17, 17);
+		}
+		if(data != null && data.getHealthUpgrade_2())
+		{
+			this.mc.renderEngine.bindTexture(hearts);
+			drawTexturedModalRect(posX + 80, posY + 50, 36, 235, 17, 17);
+		}
 
 		if(petToRender != null)
 			DrawEntityOnScreen.drawEntityOnScreen(
