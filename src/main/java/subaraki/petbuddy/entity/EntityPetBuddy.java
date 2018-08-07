@@ -89,7 +89,6 @@ public class EntityPetBuddy extends EntityTameable {
 	public EntityPetBuddy(World world, float baseHealth) {
 		this(world);
 		this.getEntityAttribute(SharedMonsterAttributes.MAX_HEALTH).setBaseValue(baseHealth);
-		System.out.println(baseHealth);
 	}
 
 	///// INITS/////

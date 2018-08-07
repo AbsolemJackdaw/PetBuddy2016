@@ -17,6 +17,6 @@ public class NetworkHandler {
 		NETWORK.registerMessage(PacketSyncOwnInventoryHandler.class, PacketSyncOwnInventory.class, 1, Side.CLIENT);
 		NETWORK.registerMessage(PacketStowOrSummonPetHandler.class, PacketStowOrSummonPet.class, 2, Side.SERVER);
 		NETWORK.registerMessage(PacketSyncPetRenderDataHandler.class, PacketSyncPetRenderData.class, 3, Side.SERVER);
-
+		
 	}
 }
