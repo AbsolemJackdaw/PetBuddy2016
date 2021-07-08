@@ -1,0 +1,34 @@
+modLoader="javafml" #mandatory
+loaderVersion="[36,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+license="GNU v3"
+issueTrackerURL="https://github.com/ArtixAllMighty/PetBuddy2016" 
+# A list of mods - how many allowed here is determined by the individual mod loader
+[[mods]] #mandatory
+# The modid of the mod
+modId="petbuddy" #mandatory
+version="${file.jarVersion}" #mandatory
+displayName="Pet Buddy" #mandatory
+displayURL="https://www.curseforge.com/minecraft/mc-mods/pet-buddy-mod" #optional
+logoFile="examplemod.png" #optional
+authors="Absolem Jackdaw, Subaraki" #optional
+credits="Many thanks to the tourough testers Crydigo and Deity Duck" #optional
+# The description text for the mod (multi line!) (#mandatory)
+description='''
+Never feel alone again with your pet buddy ! 
+Have him fight for you, hold on to precious items and comfort you
+in the most dire of survival times !
+'''
+# A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
+[[dependencies.petbuddy]] #optional
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[36,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+	
+[[dependencies.petbuddy]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.16.5]"
+    ordering="NONE"
+    side="BOTH"

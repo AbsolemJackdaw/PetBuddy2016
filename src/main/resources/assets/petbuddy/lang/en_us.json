@@ -1,0 +1,5 @@
+{
+	"entity.petbuddy.petbuddy_entity" : "Pet Buddy", 
+	"container.petbuddy.buddy_container" : "Pet Inventory",
+	"buddy.recovering" : "Your Buddy is currently recovering. "
+}

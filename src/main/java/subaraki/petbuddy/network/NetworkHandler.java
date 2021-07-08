@@ -1,22 +1,26 @@
 package subaraki.petbuddy.network;
 
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
-import net.minecraftforge.fml.relauncher.Side;
-import subaraki.petbuddy.network.PacketStowOrSummonPet.PacketStowOrSummonPetHandler;
-import subaraki.petbuddy.network.PacketSyncOtherInventory.PacketSyncOtherInventoryHandler;
-import subaraki.petbuddy.network.PacketSyncOwnInventory.PacketSyncOwnInventoryHandler;
-import subaraki.petbuddy.network.PacketSyncPetRenderData.PacketSyncPetRenderDataHandler;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.network.NetworkRegistry;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import subaraki.petbuddy.mod.PetBuddy;
+import subaraki.petbuddy.network.client.CPacketSyncArmorSlots;
+import subaraki.petbuddy.network.server.SPacketSummonBuddy;
 
 public class NetworkHandler {
-	public static final String CHANNEL = "petbuddy_channel";
-	public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel(CHANNEL);
 
-	public NetworkHandler() {
-		NETWORK.registerMessage(PacketSyncOtherInventoryHandler.class, PacketSyncOtherInventory.class, 0, Side.CLIENT);
-		NETWORK.registerMessage(PacketSyncOwnInventoryHandler.class, PacketSyncOwnInventory.class, 1, Side.CLIENT);
-		NETWORK.registerMessage(PacketStowOrSummonPetHandler.class, PacketStowOrSummonPet.class, 2, Side.SERVER);
-		NETWORK.registerMessage(PacketSyncPetRenderDataHandler.class, PacketSyncPetRenderData.class, 3, Side.SERVER);
-		
-	}
+    private static final String PROTOCOL_VERSION = "1";
+
+    public static final SimpleChannel NETWORK = NetworkRegistry.newSimpleChannel(new ResourceLocation(PetBuddy.MODID, "buddychannel"), () -> PROTOCOL_VERSION,
+            PROTOCOL_VERSION::equals, PROTOCOL_VERSION::equals);
+
+    public NetworkHandler() {
+
+        int id = 0;
+        // client handling
+        new CPacketSyncArmorSlots().register(id++);
+
+        // Server handling
+        new SPacketSummonBuddy().register(id++);
+    }
 }
