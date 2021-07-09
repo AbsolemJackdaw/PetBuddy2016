@@ -107,8 +107,7 @@ public class BuddyData {
             buddy = new PetBuddyEntity(PetBuddy.ENTITY_PETBUDDY_TYPE.get(), player.level);
             buddy.setOwnerUUID(player.getUUID());
             buddy.load(buddyNBT);
-            if(!buddy.hasCustomName())
-                buddy.setCustomName(new StringTextComponent(player.getGameProfile().getName()));
+                   
             buddy.moveTo(player.position().x, player.position().y, player.position().z, -player.yRot, 0.0F);
             world.addFreshEntity(buddy);
             world.sendParticles(ParticleTypes.HEART, this.buddy.position().x(), buddy.position().y() + 0.5d, buddy.position().z(), 1, 0.0D, 0.0D, 0.0D, 0.0D);
@@ -125,10 +124,13 @@ public class BuddyData {
                 }
             });
 
+            if (!buddy.hasCustomName())
+                buddy.setCustomName(new StringTextComponent(player.getGameProfile().getName()));
+
         }
         else
         {
-            //write to empty nbt to prevent old stuff from staying ! 
+            // write to empty nbt to prevent old stuff from staying !
             buddyNBT = new CompoundNBT();
             buddy.save(buddyNBT);
             buddy.remove();
@@ -255,6 +257,13 @@ public class BuddyData {
             }
         }
 
+    }
+
+    public void syncPetName(String name)
+    {
+
+        if (name != null && name.length() > 0)
+            buddy.setCustomName(new StringTextComponent(name));
     }
 
     public ItemStackHandler getPetInventory()
