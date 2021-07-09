@@ -277,10 +277,7 @@ public class PetBuddyEntity extends TameableEntity {
     public boolean save(CompoundNBT nbt)
     {
 
-        CompoundNBT tag = inventory.serializeNBT();
-        nbt.merge(tag);
-
-        return super.save(nbt);
+        return super.save(nbt.merge(inventory.serializeNBT()));
     }
 
     @Override
