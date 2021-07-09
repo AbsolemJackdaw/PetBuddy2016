@@ -10,8 +10,6 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -19,12 +17,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 import subaraki.petbuddy.server.inventory.PetBuddyContainer;
 
-@Mod(value = PetBuddy.MODID)
-@EventBusSubscriber(bus = Bus.MOD, modid = PetBuddy.MODID)
+@Mod(PetBuddy.MODID)
 public class PetBuddy {
 
     public static final String MODID = "petbuddy";
-    public static final String NAME = "pet Buddy";
+    public static final String NAME = "Pet Buddy";
     public static final String VERSION = "$version";
 
     public static Logger log = LogManager.getLogger(MODID);
