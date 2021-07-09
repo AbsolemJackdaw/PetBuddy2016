@@ -58,9 +58,7 @@ public class BuddyData {
             buddy.setOwnerUUID(player.getUUID());
         }
 
-        CompoundNBT tag = new CompoundNBT();
-        buddy.save(tag);
-
+        CompoundNBT tag = buddyNBT;
         tag.putBoolean("data_hasPetOut", hasBuddyOut);
         tag.putInt("cooldown", respawnCoolDown);
 
@@ -70,13 +68,14 @@ public class BuddyData {
     public void readData(INBT nbt)
     {
 
+        CompoundNBT tag = (CompoundNBT) nbt;
+
         if (buddy == null)
         {
             buddy = new PetBuddyEntity(PetBuddy.ENTITY_PETBUDDY_TYPE.get(), player.level);
             buddy.setOwnerUUID(player.getUUID());
         }
 
-        CompoundNBT tag = (CompoundNBT) nbt;
         buddy.load(tag);
         buddyNBT = tag;
 
@@ -107,7 +106,7 @@ public class BuddyData {
             buddy = new PetBuddyEntity(PetBuddy.ENTITY_PETBUDDY_TYPE.get(), player.level);
             buddy.setOwnerUUID(player.getUUID());
             buddy.load(buddyNBT);
-                   
+
             buddy.moveTo(player.position().x, player.position().y, player.position().z, -player.yRot, 0.0F);
             world.addFreshEntity(buddy);
             world.sendParticles(ParticleTypes.HEART, this.buddy.position().x(), buddy.position().y() + 0.5d, buddy.position().z(), 1, 0.0D, 0.0D, 0.0D, 0.0D);
