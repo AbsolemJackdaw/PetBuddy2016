@@ -1,11 +1,5 @@
 package subaraki.petbuddy.client.entity;
 
-import java.util.Map;
-import java.util.UUID;
-
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture.Type;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.Minecraft;
@@ -19,8 +13,6 @@ import net.minecraft.client.renderer.entity.layers.HeadLayer;
 import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.resources.DefaultPlayerSkin;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.vector.Matrix4f;
@@ -31,46 +23,36 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import subaraki.petbuddy.client.entity.layers.Deadmau5HeadLayerBuddy;
+import subaraki.petbuddy.client.entity.layers.LayerRenderWithRegularArms;
+import subaraki.petbuddy.client.entity.layers.LayerRenderWithSmallArms;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> {
 
     static final PlayerModel<PetBuddyEntity> model = new PlayerModel<>(0.0f, false);
-    static final PlayerModel<PetBuddyEntity> model_slim = new PlayerModel<>(0.0f, true);
 
     public RenderEntityPetBuddy(EntityRendererManager manager) {
 
         super(manager, model, 0.25f);
+        this.addLayer(new LayerRenderWithSmallArms(this));
+        this.addLayer(new LayerRenderWithRegularArms(this));
         this.addLayer(new BipedArmorLayer<>(this, new BipedModel<PetBuddyEntity>(0.5f), new BipedModel<PetBuddyEntity>(1.0f)));
         this.addLayer(new HeldItemLayer<>(this));
         this.addLayer(new Deadmau5HeadLayerBuddy(this));
         this.addLayer(new HeadLayer<>(this));
+        model.setAllVisible(false);
+    }
+    
+    @Override
+    public PlayerModel<PetBuddyEntity> getModel()
+    {
+        return super.getModel();
     }
 
     @Override
     public ResourceLocation getTextureLocation(PetBuddyEntity buddy)
     {
-
-        UUID uuid = buddy.getOwnerUUID();
-        if (uuid != null)
-            if (buddy.level != null)
-            {
-                PlayerEntity owner = buddy.level.getPlayerByUUID(uuid);
-                if (owner != null)
-                {
-                    GameProfile profile = buddy.getClientOwnerSkin();
-
-                    if (buddy.getSkinForm() != null)
-                        profile = buddy.getSkinForm();
-
-                    Minecraft minecraft = Minecraft.getInstance();
-                    Map<Type, MinecraftProfileTexture> map = minecraft.getSkinManager().getInsecureSkinInformation(profile);
-                    return map.containsKey(Type.SKIN) ? minecraft.getSkinManager().registerTexture(map.get(Type.SKIN), Type.SKIN)
-                            : DefaultPlayerSkin.getDefaultSkin(PlayerEntity.createPlayerUUID(profile));
-
-                }
-
-            }
 
         return new ResourceLocation("minecraft", "textures/entity/steve.png");
     }
@@ -123,9 +105,11 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
             float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
             int j = (int) (f1 * 255.0F) << 24;
             FontRenderer fontrenderer = this.getFont();
+            
             TextFormatting health_color = buddy.getHealth() <= buddy.getMaxHealth() * 0.25 ? TextFormatting.RED
                     : buddy.getHealth() <= buddy.getMaxHealth() * 0.5 ? TextFormatting.GOLD
                             : buddy.getHealth() <= buddy.getMaxHealth() * 0.75 ? TextFormatting.DARK_GREEN : TextFormatting.GREEN;
+            
             IFormattableTextComponent colored_text = new StringTextComponent(text.getString())
                     .setStyle(Style.EMPTY.withColor(Color.fromLegacyFormat(health_color)));
             float f2 = (float) (-fontrenderer.width(text) / 2);

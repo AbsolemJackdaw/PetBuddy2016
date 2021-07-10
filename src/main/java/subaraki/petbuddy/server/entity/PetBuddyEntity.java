@@ -46,6 +46,7 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 import subaraki.petbuddy.capability.BuddyData;
 import subaraki.petbuddy.client.ClientReferences;
+import subaraki.petbuddy.client.entity.EnumPetForm;
 import subaraki.petbuddy.mod.ConfigHandler;
 import subaraki.petbuddy.server.inventory.PetBuddyContainer;
 import subaraki.petbuddy.server.inventory.PetBuddyInventory;
@@ -303,6 +304,12 @@ public class PetBuddyEntity extends TameableEntity {
         return ownerSkin;
     }
 
+    public EnumPetForm getPetForm()
+    {
+
+        return EnumPetForm.SKIN;
+    }
+    
     @Override
     public boolean isTame()
     {
