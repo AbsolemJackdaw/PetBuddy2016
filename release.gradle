@@ -1,0 +1,23 @@
+artifactory {
+    if (project.hasProperty("artifactory_user")) {
+        contextUrl = "https://petbuddy.jfrog.io/artifactory"
+        publish {
+            repository {
+                repoKey = "mods"
+
+                username = artifactory_user
+                password = artifactory_api_key
+            }
+            defaults {
+                publications("mavenJava")
+
+                publishArtifacts = true
+                publishPom = true
+            }
+        }
+    } else {
+        println "Cannot configure artifactory; please define ext.artifactory_user and ext.artifactory_api_key before running artifactoryPublish"
+    }
+}
+
+artifactoryPublish.dependsOn build
