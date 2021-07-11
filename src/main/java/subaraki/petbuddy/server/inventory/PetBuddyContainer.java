@@ -148,7 +148,7 @@ public class PetBuddyContainer extends Container {
     private ItemStack toChest(int givenSlot)
     {
 
-        if (getSlot(4).isActive())
+        if (getSlot(3).hasItem())
 
             if (givenSlot >= 16 && givenSlot < 52)
                 if (!this.moveItemStackTo(getSlot(givenSlot).getItem(), 4, 16, false))
