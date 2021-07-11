@@ -61,11 +61,9 @@ public class CPacketSyncArmorSlots implements IPacketBase {
 
                 if (slot < 2)
                     data.setClientArmorSlot(equipment, slot, entityID);
+
                 if (slot == 2)
-                    if (!equipment.isEmpty())
-                        data.setSkinForm(equipment.getHoverName().getString());
-                    else
-                        data.setSkinForm("");
+                    data.setPetForm(equipment);
 
             });
 

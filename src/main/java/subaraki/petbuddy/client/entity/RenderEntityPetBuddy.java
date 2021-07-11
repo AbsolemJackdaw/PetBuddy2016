@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
 import net.minecraft.client.renderer.entity.layers.HeadLayer;
 import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
@@ -23,8 +22,10 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextFormatting;
+import subaraki.petbuddy.api.IPetFormBase;
+import subaraki.petbuddy.api.PetForms;
+import subaraki.petbuddy.client.entity.layers.BipedArmorLayerPetBuddy;
 import subaraki.petbuddy.client.entity.layers.Deadmau5HeadLayerBuddy;
-import subaraki.petbuddy.client.entity.layers.LayerRenderWithRegularArms;
 import subaraki.petbuddy.client.entity.layers.LayerRenderWithSmallArms;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
@@ -35,18 +36,26 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
     public RenderEntityPetBuddy(EntityRendererManager manager) {
 
         super(manager, model, 0.25f);
+
+        for (IPetFormBase form : PetForms.all())
+        {
+            this.addLayer(form.getLayer(this));
+        }
+
         this.addLayer(new LayerRenderWithSmallArms(this));
-        this.addLayer(new LayerRenderWithRegularArms(this));
-        this.addLayer(new BipedArmorLayer<>(this, new BipedModel<PetBuddyEntity>(0.5f), new BipedModel<PetBuddyEntity>(1.0f)));
+
+        this.addLayer(new BipedArmorLayerPetBuddy(this, new BipedModel<>(0.5f), new BipedModel<>(1.0F)));
         this.addLayer(new HeldItemLayer<>(this));
+
         this.addLayer(new Deadmau5HeadLayerBuddy(this));
         this.addLayer(new HeadLayer<>(this));
         model.setAllVisible(false);
     }
-    
+
     @Override
     public PlayerModel<PetBuddyEntity> getModel()
     {
+
         return super.getModel();
     }
 
@@ -61,7 +70,7 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
     protected void scale(PetBuddyEntity buddy, MatrixStack stack, float p_225620_3_)
     {
 
-        float scale = 0.35f;
+        float scale = buddy.getPetForm().getScale();
         stack.scale(scale, scale, scale);
         super.scale(buddy, stack, p_225620_3_);
     }
@@ -105,14 +114,15 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
             float f1 = Minecraft.getInstance().options.getBackgroundOpacity(0.25F);
             int j = (int) (f1 * 255.0F) << 24;
             FontRenderer fontrenderer = this.getFont();
-            
+
             TextFormatting health_color = buddy.getHealth() <= buddy.getMaxHealth() * 0.25 ? TextFormatting.RED
                     : buddy.getHealth() <= buddy.getMaxHealth() * 0.5 ? TextFormatting.GOLD
                             : buddy.getHealth() <= buddy.getMaxHealth() * 0.75 ? TextFormatting.DARK_GREEN : TextFormatting.GREEN;
-            
+
             IFormattableTextComponent colored_text = new StringTextComponent(text.getString())
                     .setStyle(Style.EMPTY.withColor(Color.fromLegacyFormat(health_color)));
             float f2 = (float) (-fontrenderer.width(text) / 2);
+           
             fontrenderer.drawInBatch(colored_text, f2, (float) i, 553648127, false, matrix4f, buffer, flag, j, light);
             if (flag)
             {
@@ -124,24 +134,33 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
     }
 
     @Override
-    protected void setupRotations(PetBuddyEntity p_225621_1_, MatrixStack p_225621_2_, float p_225621_3_, float p_225621_4_, float p_225621_5_)
+    protected void setupRotations(PetBuddyEntity buddy, MatrixStack stack, float f1, float f2, float f3)
     {
 
-        float swim_ammount = p_225621_1_.getSwimAmount(p_225621_5_);
+        float swim_ammount = buddy.getSwimAmount(f3);
 
-        if (swim_ammount > 0.0F)
+        if (swim_ammount > 0.0F && buddy.getPetForm().canVisuallySwimLikePlayer())
         {
-            super.setupRotations(p_225621_1_, p_225621_2_, p_225621_3_, p_225621_4_, p_225621_5_);
-            float f3 = p_225621_1_.isInWater() ? -90.0F - p_225621_1_.xRot : -90.0F;
-            float f4 = MathHelper.lerp(swim_ammount, 0.0F, f3);
-            p_225621_2_.mulPose(Vector3f.XP.rotationDegrees(f4));
-            if (p_225621_1_.isVisuallySwimming())
+            super.setupRotations(buddy, stack, f1, f2, f3);
+            float rotationX = buddy.isInWater() ? -90.0F - buddy.xRot : -90.0F;
+            float swim_lerp = MathHelper.lerp(swim_ammount, 0.0F, rotationX);
+            stack.mulPose(Vector3f.XP.rotationDegrees(swim_lerp));
+            if (buddy.isVisuallySwimming())
             {
-                p_225621_2_.translate(0.0D, -0.3D, (double) 0.35F);
+                stack.translate(0.0D, -0.3D, (double) 0.35F);
             }
         }
         else
 
-            super.setupRotations(p_225621_1_, p_225621_2_, p_225621_3_, p_225621_4_, p_225621_5_);
+            super.setupRotations(buddy, stack, f1, f2, f3);
+    }
+
+    @Override
+    protected float getBob(PetBuddyEntity buddy, float tick)
+    {
+
+        buddy.getPetForm().getBob(buddy, tick);
+
+        return 0;
     }
 }

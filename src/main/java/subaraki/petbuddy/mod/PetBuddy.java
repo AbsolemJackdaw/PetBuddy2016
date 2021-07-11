@@ -30,7 +30,7 @@ public class PetBuddy {
     private static final DeferredRegister<ContainerType<?>> CONTAINER = DeferredRegister.create(ForgeRegistries.CONTAINERS, MODID);
 
     public static final RegistryObject<EntityType<PetBuddyEntity>> ENTITY_PETBUDDY_TYPE = ENTITY.register("petbuddy_entity",
-            () -> EntityType.Builder.of(PetBuddyEntity::new, EntityClassification.CREATURE).sized(0.4f, 0.75f).build(new ResourceLocation(MODID, "pbe").toString()));
+            () -> EntityType.Builder.of(PetBuddyEntity::new, EntityClassification.CREATURE).sized(0.4f, 0.75f).setUpdateInterval(1).setTrackingRange(2).clientTrackingRange(2).build(new ResourceLocation(MODID, "pbe").toString()));
 
     public static final RegistryObject<ContainerType<PetBuddyContainer>> PETBUDDY_CONTAINER_TYPE = CONTAINER.register("petbuddy_container",
             () -> new ContainerType<>(PetBuddyContainer::registerClientContainer));

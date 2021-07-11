@@ -16,6 +16,7 @@ import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.NameTagItem;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.particles.ParticleTypes;
@@ -28,6 +29,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.ItemStackHandler;
+import subaraki.petbuddy.api.PetForms;
 import subaraki.petbuddy.client.ClientReferences;
 import subaraki.petbuddy.mod.ConfigHandler;
 import subaraki.petbuddy.mod.PetBuddy;
@@ -263,6 +265,23 @@ public class BuddyData {
 
         if (name != null && name.length() > 0)
             buddy.setCustomName(new StringTextComponent(name));
+    }
+
+    public void setPetForm(ItemStack stack)
+    {
+
+        if (stack.isEmpty())
+        {
+            buddy.setPetForm(PetForms.DEFAULT);
+            setSkinForm("");
+        }
+        else
+        {
+            buddy.setPetForm(PetForms.getFormFromItem(stack.getItem()));
+            if (stack.getItem() instanceof NameTagItem)
+                setSkinForm(stack.getHoverName().getString());
+        }
+
     }
 
     public ItemStackHandler getPetInventory()

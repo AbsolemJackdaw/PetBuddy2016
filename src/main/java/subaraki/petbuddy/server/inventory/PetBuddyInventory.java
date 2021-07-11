@@ -41,7 +41,7 @@ public class PetBuddyInventory extends ItemStackHandler {
                         BuddyData.get(owner).ifPresent((data) -> {
 
                             data.reinstateGoals(slot);
-
+                            data.setPetForm(equipment);
                             NetworkHandler.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity) owner),
                                     new CPacketSyncArmorSlots(equipment, slot, buddy.getId()));
                         });

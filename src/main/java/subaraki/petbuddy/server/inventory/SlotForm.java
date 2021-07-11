@@ -1,7 +1,6 @@
 package subaraki.petbuddy.server.inventory;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.NameTagItem;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -16,7 +15,7 @@ public class SlotForm extends SlotItemHandler {
     public boolean mayPlace(ItemStack stack)
     {
     
-        return stack.getItem() instanceof NameTagItem;
+        return true; //stack.getItem() instanceof NameTagItem;
     }
     
 }

@@ -44,9 +44,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
+import subaraki.petbuddy.api.IPetFormBase;
+import subaraki.petbuddy.api.PetForms;
 import subaraki.petbuddy.capability.BuddyData;
 import subaraki.petbuddy.client.ClientReferences;
-import subaraki.petbuddy.client.entity.EnumPetForm;
 import subaraki.petbuddy.mod.ConfigHandler;
 import subaraki.petbuddy.server.inventory.PetBuddyContainer;
 import subaraki.petbuddy.server.inventory.PetBuddyInventory;
@@ -58,6 +59,8 @@ public class PetBuddyEntity extends TameableEntity {
     private GameProfile ownerSkin = null;
 
     public Goal attack_owner_target = new OwnerHurtTargetGoal(this);
+
+    private IPetFormBase petForm = PetForms.DEFAULT;
 
     public PetBuddyEntity(EntityType<? extends TameableEntity> type, World world) {
 
@@ -214,6 +217,8 @@ public class PetBuddyEntity extends TameableEntity {
 
         super.tick();
 
+        getPetForm().tick(this);
+
         if (level.isClientSide())
             return;
 
@@ -304,12 +309,18 @@ public class PetBuddyEntity extends TameableEntity {
         return ownerSkin;
     }
 
-    public EnumPetForm getPetForm()
+    public IPetFormBase getPetForm()
     {
 
-        return EnumPetForm.SKIN;
+        return petForm;
     }
-    
+
+    public void setPetForm(IPetFormBase petForm)
+    {
+
+        this.petForm = petForm;
+    }
+
     @Override
     public boolean isTame()
     {

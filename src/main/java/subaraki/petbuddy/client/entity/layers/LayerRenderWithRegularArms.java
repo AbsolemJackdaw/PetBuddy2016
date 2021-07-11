@@ -21,7 +21,7 @@ import net.minecraft.client.resources.DefaultPlayerSkin;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.ResourceLocation;
-import subaraki.petbuddy.client.entity.EnumPetForm;
+import subaraki.petbuddy.petform.SkinForm;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class LayerRenderWithRegularArms extends LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> {
@@ -43,7 +43,7 @@ public class LayerRenderWithRegularArms extends LayerRenderer<PetBuddyEntity, Pl
         if (buddy.getSkinForm() != null)
             profile = buddy.getSkinForm();
 
-        if (profile == null || shouldRenderWithArms(profile, buddy) && !buddy.getPetForm().equals(EnumPetForm.SKIN))
+        if (profile == null || shouldRenderWithArms(profile, buddy) || !buddy.getPetForm().getID().equals(SkinForm.SKIN_ID))
             return;
 
         if (buddy.isCrouching())
