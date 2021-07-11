@@ -7,10 +7,17 @@ buildscript {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
     }
 }
+
+plugins {
+  id 'com.jfrog.artifactory' version '4.21.0'
+  id 'maven-publish'
+}
+	
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.artifactory'
 
 version = '1.16.5-3.0.0.0'
 group = 'subaraki' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -107,11 +114,7 @@ publishing {
     }
     repositories {
         maven {
-            url "file:///${project.projectDir}/mcmodsrepo"
+            url "https://petbuddy.jfrog.io/artifactory/mods"
         }
     }
-}
-
-plugins {
-  id 'com.jfrog.artifactory' version '4.21.0'
 }
