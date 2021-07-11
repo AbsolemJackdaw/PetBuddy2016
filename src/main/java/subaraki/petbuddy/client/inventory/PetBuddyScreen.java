@@ -78,7 +78,7 @@ public class PetBuddyScreen extends ContainerScreen<PetBuddyContainer> {
     @Override
     public void render(MatrixStack stack, int p_230430_2_, int p_230430_3_, float p_230430_4_)
     {
-
+        this.renderBackground(stack);
         super.render(stack, p_230430_2_, p_230430_3_, p_230430_4_);
         this.renderTooltip(stack, p_230430_2_, p_230430_3_);
 
