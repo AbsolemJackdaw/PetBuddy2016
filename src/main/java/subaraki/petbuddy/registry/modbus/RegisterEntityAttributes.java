@@ -17,7 +17,7 @@ public class RegisterEntityAttributes {
     {
 
         AttributeModifierMap map = AttributeModifierMap.builder()
-                .add(ForgeMod.ENTITY_GRAVITY.get(), 0.1D)
+                .add(ForgeMod.ENTITY_GRAVITY.get(), 0.08D)
                 .add(ForgeMod.SWIM_SPEED.get(), 3D)
                 .add(Attributes.ARMOR, 2D)
                 .add(Attributes.ARMOR_TOUGHNESS, 2d)
