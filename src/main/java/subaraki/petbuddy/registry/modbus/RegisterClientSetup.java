@@ -18,8 +18,13 @@ import subaraki.petbuddy.mod.PetBuddy;
 import subaraki.petbuddy.petform.ChickenForm;
 import subaraki.petbuddy.petform.CowForm;
 import subaraki.petbuddy.petform.FoxForm;
+import subaraki.petbuddy.petform.MooshroomBrownForm;
+import subaraki.petbuddy.petform.MooshroomRedForm;
 import subaraki.petbuddy.petform.PigForm;
 import subaraki.petbuddy.petform.SkinForm;
+import subaraki.petbuddy.petform.SnowManForm;
+import subaraki.petbuddy.petform.SnowManPumpkinForm;
+import subaraki.petbuddy.petform.TurtleForm;
 
 @EventBusSubscriber(modid = PetBuddy.MODID, bus = Bus.MOD, value = Dist.CLIENT)
 public class RegisterClientSetup {
@@ -46,7 +51,11 @@ public class RegisterClientSetup {
         PetForms.addForm(new PigForm());
         PetForms.addForm(new CowForm());
         PetForms.addForm(new FoxForm());
-
+        PetForms.addForm(new MooshroomRedForm());
+        PetForms.addForm(new MooshroomBrownForm());
+        PetForms.addForm(new SnowManForm());
+        PetForms.addForm(new SnowManPumpkinForm());
+        PetForms.addForm(new TurtleForm());
     }
 
 }
