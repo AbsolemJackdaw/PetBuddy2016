@@ -2,7 +2,6 @@ package subaraki.petbuddy.petform;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -91,32 +90,24 @@ public class FoxForm implements IPetFormBase {
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
 
-        return new LayerFox(parent_renderer);
-    }
+        return new LayerPetFormBase(parent_renderer) {
 
-    private class LayerFox extends LayerPetFormBase {
+            private final ResourceLocation RED_FOX_TEXTURE = new ResourceLocation("textures/entity/fox/fox.png");
 
-        private final ResourceLocation RED_FOX_TEXTURE = new ResourceLocation("textures/entity/fox/fox.png");
+            @Override
+            protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
+            {
 
-        public LayerFox(IEntityRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> parent_renderer) {
+                return RED_FOX_TEXTURE;
+            }
 
-            super(parent_renderer);
-        }
+            @Override
+            public IPetFormBase getForm()
+            {
 
-        @Override
-        protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
-        {
-
-            return RED_FOX_TEXTURE;
-        }
-
-        @Override
-        public IPetFormBase getForm()
-        {
-
-            return FoxForm.this;
-        }
-
+                return FoxForm.this;
+            }
+        };
     }
 
 }

@@ -15,6 +15,8 @@ import subaraki.petbuddy.api.PetForms;
 import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
 import subaraki.petbuddy.client.inventory.PetBuddyScreen;
 import subaraki.petbuddy.mod.PetBuddy;
+import subaraki.petbuddy.petform.BatForm;
+import subaraki.petbuddy.petform.CatForm;
 import subaraki.petbuddy.petform.ChickenForm;
 import subaraki.petbuddy.petform.CowForm;
 import subaraki.petbuddy.petform.FoxForm;
@@ -56,6 +58,9 @@ public class RegisterClientSetup {
         PetForms.addForm(new SnowManForm());
         PetForms.addForm(new SnowManPumpkinForm());
         PetForms.addForm(new TurtleForm());
+        PetForms.addForm(new BatForm());
+        PetForms.addForm(new CatForm());
+
     }
 
 }

@@ -2,7 +2,6 @@ package subaraki.petbuddy.petform;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.CowModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -70,44 +69,6 @@ public class CowForm implements IPetFormBase {
     }
 
     @Override
-    public EntityModel<PetBuddyEntity> getDefaultModel()
-    {
-
-        return cowModel;
-    }
-
-    @Override
-    public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
-    {
-
-        return new LayerCow(parent_renderer);
-    }
-
-    private class LayerCow extends LayerPetFormBase {
-
-        private final ResourceLocation COW_LOCATION = new ResourceLocation("textures/entity/cow/cow.png");
-
-        public LayerCow(IEntityRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> parent_renderer) {
-
-            super(parent_renderer);
-        }
-
-        @Override
-        protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
-        {
-
-            return COW_LOCATION;
-        }
-
-        @Override
-        public IPetFormBase getForm()
-        {
-
-            return CowForm.this;
-        }
-    }
-
-    @Override
     public float getBob(PetBuddyEntity buddy, float tickCount)
     {
 
@@ -120,4 +81,34 @@ public class CowForm implements IPetFormBase {
 
     }
 
+    @Override
+    public EntityModel<PetBuddyEntity> getDefaultModel()
+    {
+
+        return cowModel;
+    }
+
+    @Override
+    public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
+    {
+
+        return new LayerPetFormBase(parent_renderer) {
+
+            private final ResourceLocation COW_LOCATION = new ResourceLocation("textures/entity/cow/cow.png");
+
+            @Override
+            protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
+            {
+
+                return COW_LOCATION;
+            }
+
+            @Override
+            public IPetFormBase getForm()
+            {
+
+                return CowForm.this;
+            }
+        };
+    }
 }

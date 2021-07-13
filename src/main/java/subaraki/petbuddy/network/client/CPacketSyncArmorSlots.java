@@ -62,6 +62,7 @@ public class CPacketSyncArmorSlots implements IPacketBase {
                 if (slot < 2)
                     data.setClientArmorSlot(equipment, slot, entityID);
 
+                //sets slot on relog / respawn
                 if (slot == 2)
                     data.setPetForm(equipment);
 

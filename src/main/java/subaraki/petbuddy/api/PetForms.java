@@ -5,8 +5,11 @@ import java.util.ArrayList;
 import com.google.common.collect.Lists;
 
 import net.minecraft.item.Item;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import subaraki.petbuddy.petform.SkinForm;
 
+@OnlyIn(Dist.CLIENT)
 public class PetForms {
 
     private static ArrayList<IPetFormBase> all_forms = Lists.newArrayList();

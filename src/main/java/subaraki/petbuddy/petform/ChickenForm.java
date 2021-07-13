@@ -2,7 +2,6 @@ package subaraki.petbuddy.petform;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.ChickenModel;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -19,19 +18,19 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 public class ChickenForm implements IPetFormBase {
 
     private final ChickenModel<PetBuddyEntity> model;
-    
+
     // chicken animation
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
     public float oFlap;
     public float flapping = 1.0F;
-    
-    
+
     public ChickenForm() {
+
         model = new ChickenModel<PetBuddyEntity>();
     }
-    
+
     @Override
     public float getScale()
     {
@@ -56,6 +55,7 @@ public class ChickenForm implements IPetFormBase {
     @Override
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
+
         stack.translate(1.7, .6, 0.4);
     }
 
@@ -72,7 +72,7 @@ public class ChickenForm implements IPetFormBase {
 
         return -0.2f;
     }
-    
+
     @Override
     public float getBob(PetBuddyEntity buddy, float tick)
     {
@@ -81,58 +81,53 @@ public class ChickenForm implements IPetFormBase {
         float f1 = MathHelper.lerp(tick, oFlapSpeed, flapSpeed);
         return (MathHelper.sin(f) + 1.0F) * f1;
     }
-    
+
     @Override
-    public void tick (PetBuddyEntity buddy) {
+    public void tick(PetBuddyEntity buddy)
+    {
+
         // chicken animation
         this.oFlap = this.flap;
         this.oFlapSpeed = this.flapSpeed;
         this.flapSpeed = (float) ((double) this.flapSpeed + (double) (buddy.isOnGround() ? -1 : 4) * 0.3D);
         this.flapSpeed = MathHelper.clamp(this.flapSpeed, 0.0F, 1.0F);
-        
+
         if ((!buddy.isOnGround() || buddy.isSwimming()) && this.flapping < 1.0F)
         {
             this.flapping = 1.0F;
         }
         this.flap += this.flapping * 2.0F;
     }
-    
+
     @Override
     public EntityModel<PetBuddyEntity> getDefaultModel()
     {
-    
+
         return model;
     }
-    
+
     @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
 
-        return new LayerChicken(parent_renderer);
-    }
+        return new LayerPetFormBase(parent_renderer) {
 
-    private class LayerChicken extends LayerPetFormBase {
+            private final ResourceLocation CHICKEN_LOCATION = new ResourceLocation("textures/entity/chicken.png");
 
-        private final ResourceLocation CHICKEN_LOCATION = new ResourceLocation("textures/entity/chicken.png");
+            @Override
+            protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
+            {
 
-        public LayerChicken(IEntityRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> parent_renderer) {
+                return CHICKEN_LOCATION;
+            }
 
-            super(parent_renderer);
-        }
+            @Override
+            public IPetFormBase getForm()
+            {
 
-        @Override
-        protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
-        {
-
-            return CHICKEN_LOCATION;
-        }
-
-        @Override
-        public IPetFormBase getForm()
-        {
-
-            return ChickenForm.this;
-        }
+                return ChickenForm.this;
+            }
+        };
     }
 
 }

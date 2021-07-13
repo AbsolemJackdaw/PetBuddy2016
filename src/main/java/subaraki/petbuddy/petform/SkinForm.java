@@ -139,6 +139,8 @@ public class SkinForm implements IPetFormBase {
 
             if (modelToRender != null)
             {
+                modelToRender.young = false;
+                
                 if (buddy.isCrouching())
                     modelToRender.crouching = true;
                 else

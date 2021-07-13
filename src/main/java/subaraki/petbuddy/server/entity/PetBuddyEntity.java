@@ -60,7 +60,8 @@ public class PetBuddyEntity extends TameableEntity {
 
     public Goal attack_owner_target = new OwnerHurtTargetGoal(this);
 
-    private IPetFormBase petForm = PetForms.DEFAULT;
+    @OnlyIn(Dist.CLIENT)
+    private IPetFormBase petForm;
 
     public PetBuddyEntity(EntityType<? extends TameableEntity> type, World world) {
 
@@ -217,10 +218,11 @@ public class PetBuddyEntity extends TameableEntity {
 
         super.tick();
 
-        getPetForm().tick(this);
-
         if (level.isClientSide())
+        {
+            getPetForm().tick(this);
             return;
+        }
 
         if (!getInventory().getStackInSlot(0).isEmpty())
         {
@@ -309,12 +311,14 @@ public class PetBuddyEntity extends TameableEntity {
         return ownerSkin;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public IPetFormBase getPetForm()
     {
 
-        return petForm;
+        return petForm == null ? PetForms.DEFAULT : petForm;
     }
 
+    @OnlyIn(Dist.CLIENT)
     public void setPetForm(IPetFormBase petForm)
     {
 

@@ -2,7 +2,6 @@ package subaraki.petbuddy.petform;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
-import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -93,32 +92,24 @@ public class TurtleForm implements IPetFormBase {
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
 
-        return new LayerTurtle(parent_renderer);
-    }
+        return new LayerPetFormBase(parent_renderer) {
 
-    private class LayerTurtle extends LayerPetFormBase {
+            private final ResourceLocation TURTLE_LOCATION = new ResourceLocation("textures/entity/turtle/big_sea_turtle.png");
 
-        private final ResourceLocation TURTLE_LOCATION = new ResourceLocation("textures/entity/turtle/big_sea_turtle.png");
+            @Override
+            protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
+            {
 
-        public LayerTurtle(IEntityRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> parent_renderer) {
+                return TURTLE_LOCATION;
+            }
 
-            super(parent_renderer);
+            @Override
+            public IPetFormBase getForm()
+            {
 
-        }
-
-        @Override
-        protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
-        {
-
-            return TURTLE_LOCATION;
-        }
-
-        @Override
-        public IPetFormBase getForm()
-        {
-
-            return TurtleForm.this;
-        }
+                return TurtleForm.this;
+            }
+        };
     }
 
 }
