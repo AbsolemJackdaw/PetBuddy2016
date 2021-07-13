@@ -1,5 +1,7 @@
 package subaraki.petbuddy.petform;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
@@ -7,6 +9,7 @@ import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.vector.Quaternion;
 import subaraki.petbuddy.api.IPetFormBase;
 import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
 import subaraki.petbuddy.client.entity.layers.LayerPetFormBase;
@@ -37,12 +40,11 @@ public class FoxForm implements IPetFormBase {
     }
 
     @Override
-    public float heldItemOffset()
+    public void heldItemRotationAndOffset(MatrixStack stack)
     {
-
-        return 0;
+        stack.translate(1.9, -.5, 0.4);
+        stack.mulPose(new Quaternion(0, 0, -45f, true));
     }
-
     @Override
     public String getID()
     {
@@ -63,6 +65,13 @@ public class FoxForm implements IPetFormBase {
 
     }
 
+    @Override
+    public float getNameRenderOffset()
+    {
+
+        return -0.3f;
+    }
+    
     @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {

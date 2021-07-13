@@ -1,5 +1,7 @@
 package subaraki.petbuddy.petform;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.item.Item;
@@ -11,8 +13,6 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 
 public class SkinForm implements IPetFormBase {
-
-    public static final String SKIN_ID = "skin";
 
     @Override
     public float getScale()
@@ -36,17 +36,16 @@ public class SkinForm implements IPetFormBase {
     }
 
     @Override
-    public float heldItemOffset()
+    public void heldItemRotationAndOffset(MatrixStack stack)
     {
 
-        return 0;
     }
 
     @Override
     public String getID()
     {
 
-        return SKIN_ID;
+        return "skin";
     }
 
     @Override
@@ -67,6 +66,13 @@ public class SkinForm implements IPetFormBase {
     public void tick(PetBuddyEntity buddy)
     {
 
+    }
+    
+    @Override
+    public float getNameRenderOffset()
+    {
+
+        return 0;
     }
 
 }

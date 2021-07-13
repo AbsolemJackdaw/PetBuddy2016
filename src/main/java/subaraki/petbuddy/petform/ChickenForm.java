@@ -1,5 +1,7 @@
 package subaraki.petbuddy.petform;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.ChickenModel;
@@ -16,7 +18,6 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class ChickenForm implements IPetFormBase {
 
-    public static final String CHICKEN_ID = "chicken";
     // chicken animation
     public float flap;
     public float flapSpeed;
@@ -46,19 +47,25 @@ public class ChickenForm implements IPetFormBase {
     }
 
     @Override
-    public float heldItemOffset()
+    public void heldItemRotationAndOffset(MatrixStack stack)
     {
-
-        return 0;
+        stack.translate(1.7, .6, 0.4);
     }
 
     @Override
     public String getID()
     {
 
-        return CHICKEN_ID;
+        return "chicken";
     }
 
+    @Override
+    public float getNameRenderOffset()
+    {
+
+        return -0.2f;
+    }
+    
     @Override
     public float getBob(PetBuddyEntity buddy, float tick)
     {
