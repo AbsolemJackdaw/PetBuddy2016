@@ -1,4 +1,4 @@
-package subaraki.petbuddy.client.entity.layers;
+package subaraki.petbuddy.api;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import subaraki.petbuddy.api.IPetFormBase;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public abstract class LayerPetFormBase extends LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> {
@@ -31,7 +30,8 @@ public abstract class LayerPetFormBase extends LayerRenderer<PetBuddyEntity, Pla
             return;
 
         EntityModel<PetBuddyEntity> modelToRender = buddy.getPetForm().getDefaultModel();
-
+        modelToRender.young = false;
+        
         modelToRender.prepareMobModel(buddy, f1, f2, f3);
         modelToRender.setupAnim(buddy, f1, f2, f4, f5, f6);
         IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(buddy)));
