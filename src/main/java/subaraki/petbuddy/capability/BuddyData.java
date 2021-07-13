@@ -205,7 +205,11 @@ public class BuddyData {
     {
 
         if (buddy != null)
+        {
+            buddyNBT = new CompoundNBT();
+            buddy.save(buddyNBT);
             buddy.remove();
+        }
 
         this.hasBuddyOut = false;
     }
