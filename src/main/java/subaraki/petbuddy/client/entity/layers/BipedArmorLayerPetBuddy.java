@@ -7,7 +7,6 @@ import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.BipedArmorLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import subaraki.petbuddy.api.PetForms;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class BipedArmorLayerPetBuddy extends BipedArmorLayer<PetBuddyEntity, PlayerModel<PetBuddyEntity>, BipedModel<PetBuddyEntity>> {
@@ -24,7 +23,7 @@ public class BipedArmorLayerPetBuddy extends BipedArmorLayer<PetBuddyEntity, Pla
         if (entity instanceof PetBuddyEntity)
         {
             PetBuddyEntity buddy = (PetBuddyEntity) entity;
-            if (buddy.getPetForm().equals(PetForms.DEFAULT))
+            if (buddy.getPetForm().getDefaultModel() instanceof BipedModel)
                 super.render(p_225628_1_, p_225628_2_, p_225628_3_, entity, p_225628_5_, p_225628_6_, p_225628_7_, p_225628_8_, p_225628_9_, p_225628_10_);
         }
 
