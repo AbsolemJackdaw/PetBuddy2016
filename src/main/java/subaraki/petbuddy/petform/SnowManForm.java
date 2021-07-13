@@ -76,6 +76,13 @@ public class SnowManForm implements IPetFormBase {
 
         return "snowgolem";
     }
+    
+    @Override
+    public EntityModel<PetBuddyEntity> getDefaultModel()
+    {
+    
+        return snowmanModel;
+    }
 
     @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
@@ -106,13 +113,6 @@ public class SnowManForm implements IPetFormBase {
         {
 
             return SnowManForm.this;
-        }
-
-        @Override
-        public EntityModel<PetBuddyEntity> getModel()
-        {
-
-            return snowmanModel;
         }
 
         @Override

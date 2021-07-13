@@ -26,7 +26,6 @@ import subaraki.petbuddy.api.PetForms;
 import subaraki.petbuddy.client.entity.layers.BipedArmorLayerPetBuddy;
 import subaraki.petbuddy.client.entity.layers.Deadmau5HeadLayerBuddy;
 import subaraki.petbuddy.client.entity.layers.HeldBuddyItemLayer;
-import subaraki.petbuddy.client.entity.layers.LayerRenderWithSmallArms;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> {
@@ -41,8 +40,6 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
         {
             this.addLayer(form.getLayer(this));
         }
-
-        this.addLayer(new LayerRenderWithSmallArms(this));
 
         this.addLayer(new BipedArmorLayerPetBuddy(this, new BipedModel<>(0.5f), new BipedModel<>(1.0F)));
         this.addLayer(new HeldBuddyItemLayer(this));

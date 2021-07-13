@@ -18,6 +18,13 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class TurtleForm implements IPetFormBase {
 
+    protected TurtleBuddyModel model;
+
+    public TurtleForm() {
+
+        model = new TurtleBuddyModel(0.0f);
+    }
+
     @Override
     public float getScale()
     {
@@ -42,9 +49,10 @@ public class TurtleForm implements IPetFormBase {
     @Override
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
+
         stack.translate(2.6, -0.5, 0);
         stack.mulPose(new Quaternion(-90f, 90f, 0, true));
-        stack.scale(2,2,2);
+        stack.scale(2, 2, 2);
     }
 
     @Override
@@ -75,6 +83,13 @@ public class TurtleForm implements IPetFormBase {
     }
 
     @Override
+    public EntityModel<PetBuddyEntity> getDefaultModel()
+    {
+
+        return model;
+    }
+
+    @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
 
@@ -96,13 +111,6 @@ public class TurtleForm implements IPetFormBase {
         {
 
             return TURTLE_LOCATION;
-        }
-
-        @Override
-        public EntityModel<PetBuddyEntity> getModel()
-        {
-
-            return new TurtleBuddyModel(0.0f);
         }
 
         @Override

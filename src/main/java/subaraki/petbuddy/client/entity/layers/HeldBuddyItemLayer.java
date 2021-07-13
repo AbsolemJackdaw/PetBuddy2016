@@ -28,7 +28,7 @@ public class HeldBuddyItemLayer extends LayerRenderer<PetBuddyEntity, PlayerMode
     public void render(MatrixStack stack, IRenderTypeBuffer buffer, int the_int, PetBuddyEntity buddy, float f1, float f2, float f3, float f4, float f5, float f6)
     {
 
-        if (buddy.getPetForm().getID().equals("skin"))
+        if (buddy.getPetForm().getDefaultModel() instanceof IHasArm)
         {
             boolean flag = buddy.getMainArm() == HandSide.RIGHT;
             ItemStack itemstack = flag ? buddy.getOffhandItem() : buddy.getMainHandItem();

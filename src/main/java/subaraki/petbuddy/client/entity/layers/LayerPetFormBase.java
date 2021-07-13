@@ -15,25 +15,11 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public abstract class LayerPetFormBase extends LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> {
 
-    private EntityModel<PetBuddyEntity> modelToRender;
-
     public LayerPetFormBase(IEntityRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> parent_renderer) {
 
         super(parent_renderer);
         this.getParentModel().setAllVisible(false);
-        this.setModel(getModel());
-
     }
-
-    private void setModel(EntityModel<PetBuddyEntity> model_to_render)
-    {
-
-        this.modelToRender = model_to_render;
-        modelToRender.young = false;
-    }
-    
-    
-    public abstract EntityModel<PetBuddyEntity> getModel();
 
     public abstract IPetFormBase getForm();
 
@@ -43,6 +29,8 @@ public abstract class LayerPetFormBase extends LayerRenderer<PetBuddyEntity, Pla
 
         if (!buddy.getPetForm().getID().equals(getForm().getID()))
             return;
+
+        EntityModel<PetBuddyEntity> modelToRender = buddy.getPetForm().getDefaultModel();
 
         modelToRender.prepareMobModel(buddy, f1, f2, f3);
         modelToRender.setupAnim(buddy, f1, f2, f4, f5, f6);

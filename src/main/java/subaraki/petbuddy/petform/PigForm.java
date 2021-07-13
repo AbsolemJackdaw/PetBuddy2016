@@ -18,6 +18,13 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class PigForm implements IPetFormBase {
 
+    protected final PigModel<PetBuddyEntity> model;
+
+    public PigForm() {
+
+        model = new PigModel<>();
+    }
+
     @Override
     public float getScale()
     {
@@ -42,6 +49,7 @@ public class PigForm implements IPetFormBase {
     @Override
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
+
         stack.translate(2.3, .2, 1);
         stack.mulPose(new Quaternion(0, 0, -45f, true));
         stack.scale(2, 2, 2);
@@ -60,7 +68,14 @@ public class PigForm implements IPetFormBase {
 
         return -0.4f;
     }
-    
+
+    @Override
+    public EntityModel<PetBuddyEntity> getDefaultModel()
+    {
+
+        return model;
+    }
+
     @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
@@ -91,20 +106,12 @@ public class PigForm implements IPetFormBase {
             return PigForm.this;
         }
 
-        @Override
-        public EntityModel<PetBuddyEntity> getModel()
-        {
-
-            return new PigModel<PetBuddyEntity>();
-        }
-
     }
 
     @Override
     public float getBob(PetBuddyEntity buddy, float tickCount)
     {
 
-        // TODO Auto-generated method stub
         return 0;
     }
 
@@ -112,8 +119,6 @@ public class PigForm implements IPetFormBase {
     public void tick(PetBuddyEntity buddy)
     {
 
-        // TODO Auto-generated method stub
-        
     }
 
 }

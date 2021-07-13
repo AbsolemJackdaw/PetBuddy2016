@@ -18,12 +18,19 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class ChickenForm implements IPetFormBase {
 
+    private final ChickenModel<PetBuddyEntity> model;
+    
     // chicken animation
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
     public float oFlap;
     public float flapping = 1.0F;
+    
+    
+    public ChickenForm() {
+        model = new ChickenModel<PetBuddyEntity>();
+    }
     
     @Override
     public float getScale()
@@ -91,6 +98,13 @@ public class ChickenForm implements IPetFormBase {
     }
     
     @Override
+    public EntityModel<PetBuddyEntity> getDefaultModel()
+    {
+    
+        return model;
+    }
+    
+    @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
 
@@ -118,13 +132,6 @@ public class ChickenForm implements IPetFormBase {
         {
 
             return ChickenForm.this;
-        }
-
-        @Override
-        public EntityModel<PetBuddyEntity> getModel()
-        {
-
-            return new ChickenModel<PetBuddyEntity>();
         }
     }
 

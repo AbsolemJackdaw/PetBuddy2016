@@ -18,6 +18,12 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class FoxForm implements IPetFormBase {
 
+    private final FoxBuddyModel<PetBuddyEntity> model = new FoxBuddyModel<PetBuddyEntity>();
+
+    public FoxForm() {
+
+    }
+
     @Override
     public float getScale()
     {
@@ -42,9 +48,11 @@ public class FoxForm implements IPetFormBase {
     @Override
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
+
         stack.translate(1.9, -.5, 0.4);
         stack.mulPose(new Quaternion(0, 0, -45f, true));
     }
+
     @Override
     public String getID()
     {
@@ -71,7 +79,14 @@ public class FoxForm implements IPetFormBase {
 
         return -0.3f;
     }
-    
+
+    @Override
+    public EntityModel<PetBuddyEntity> getDefaultModel()
+    {
+
+        return model;
+    }
+
     @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
@@ -100,13 +115,6 @@ public class FoxForm implements IPetFormBase {
         {
 
             return FoxForm.this;
-        }
-
-        @Override
-        public EntityModel<PetBuddyEntity> getModel()
-        {
-
-            return new FoxBuddyModel<PetBuddyEntity>();
         }
 
     }

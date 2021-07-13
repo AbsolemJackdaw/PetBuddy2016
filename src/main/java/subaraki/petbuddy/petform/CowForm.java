@@ -16,11 +16,19 @@ import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
 import subaraki.petbuddy.client.entity.layers.LayerPetFormBase;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
-public class CowForm implements IPetFormBase{
+public class CowForm implements IPetFormBase {
+
+    protected CowModel<PetBuddyEntity> cowModel = new CowModel<>();
+
+    public CowForm() {
+
+        cowModel = new CowModel<>();
+    }
 
     @Override
     public float getScale()
     {
+
         return 0.5f;
     }
 
@@ -41,6 +49,7 @@ public class CowForm implements IPetFormBase{
     @Override
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
+
         stack.translate(0.9, .1, 0.8);
         stack.mulPose(new Quaternion(0, 0, -45f, true));
         stack.scale(2, 2, 2);
@@ -59,15 +68,22 @@ public class CowForm implements IPetFormBase{
 
         return 0.1f;
     }
-    
+
+    @Override
+    public EntityModel<PetBuddyEntity> getDefaultModel()
+    {
+
+        return cowModel;
+    }
+
     @Override
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer)
     {
 
         return new LayerCow(parent_renderer);
     }
-    
-    private class LayerCow extends LayerPetFormBase{
+
+    private class LayerCow extends LayerPetFormBase {
 
         private final ResourceLocation COW_LOCATION = new ResourceLocation("textures/entity/cow/cow.png");
 
@@ -75,26 +91,19 @@ public class CowForm implements IPetFormBase{
 
             super(parent_renderer);
         }
-        
+
         @Override
         protected ResourceLocation getTextureLocation(PetBuddyEntity p_229139_1_)
         {
-        
+
             return COW_LOCATION;
         }
-        
+
         @Override
         public IPetFormBase getForm()
         {
-        
+
             return CowForm.this;
-        }
-
-        @Override
-        public EntityModel<PetBuddyEntity> getModel()
-        {
-
-            return new CowModel<>();
         }
     }
 

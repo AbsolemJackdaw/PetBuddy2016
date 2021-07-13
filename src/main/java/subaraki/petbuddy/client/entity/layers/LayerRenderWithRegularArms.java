@@ -25,12 +25,14 @@ import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class LayerRenderWithRegularArms extends LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> {
 
-    public PlayerModel<PetBuddyEntity> model;
+    private final PlayerModel<PetBuddyEntity> modelSlim = new PlayerModel<>(0.0f, true);
+    private PlayerModel<PetBuddyEntity> modelToRender = null;
+
+    private RemoteClientPlayerEntity rcpe = null;
 
     public LayerRenderWithRegularArms(IEntityRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> parent_renderer) {
 
         super(parent_renderer);
-        model = new PlayerModel<>(0.0f, false);
     }
 
     @Override
@@ -42,30 +44,48 @@ public class LayerRenderWithRegularArms extends LayerRenderer<PetBuddyEntity, Pl
         if (buddy.getSkinForm() != null)
             profile = buddy.getSkinForm();
 
-        if (profile == null || shouldRenderWithArms(profile, buddy) || !buddy.getPetForm().getID().equals("skin"))
+        if (profile == null || !buddy.getPetForm().getID().equals("skin"))
             return;
 
-        if (buddy.isCrouching())
-            model.crouching = true;
-        else
-            model.crouching = false;
+        if (buddy.getPetForm().getDefaultModel() instanceof PlayerModel)
+        {
+            if (shouldRenderWithSmallArms(profile, buddy))
+                modelToRender = modelSlim;
+            else
+                modelToRender = (PlayerModel<PetBuddyEntity>) buddy.getPetForm().getDefaultModel();
+        }
 
-        this.getParentModel().copyPropertiesTo(model);
-        model.jacket.copyFrom(this.getParentModel().jacket);
-        model.leftSleeve.copyFrom(this.getParentModel().leftSleeve);
-        model.rightSleeve.copyFrom(this.getParentModel().rightSleeve);
-        model.leftPants.copyFrom(this.getParentModel().leftPants);
-        model.rightPants.copyFrom(this.getParentModel().rightPants);
+        if (modelToRender != null)
+        {
+            if (buddy.isCrouching())
+                modelToRender.crouching = true;
+            else
+                modelToRender.crouching = false;
 
-        IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(buddy)));
-        model.renderToBuffer(stack, ivertexbuilder, the_int, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+            this.getParentModel().copyPropertiesTo(modelToRender);
+            modelToRender.jacket.copyFrom(this.getParentModel().jacket);
+            modelToRender.leftSleeve.copyFrom(this.getParentModel().leftSleeve);
+            modelToRender.rightSleeve.copyFrom(this.getParentModel().rightSleeve);
+            modelToRender.leftPants.copyFrom(this.getParentModel().leftPants);
+            modelToRender.rightPants.copyFrom(this.getParentModel().rightPants);
 
+            IVertexBuilder ivertexbuilder = buffer.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(buddy)));
+            modelToRender.renderToBuffer(stack, ivertexbuilder, the_int, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        }
     }
 
-    protected boolean shouldRenderWithArms(GameProfile profile, PetBuddyEntity buddy)
+    /***/
+    protected boolean shouldRenderWithSmallArms(GameProfile profile, PetBuddyEntity buddy)
     {
 
-        return new RemoteClientPlayerEntity((ClientWorld) buddy.level, profile).getModelName().equals("default");
+        // if none exists
+        if (rcpe == null)
+            rcpe = new RemoteClientPlayerEntity((ClientWorld) buddy.level, profile);
+        // if buddy changed skin / got a new name tag
+        if (!rcpe.getGameProfile().equals(profile))
+            rcpe = new RemoteClientPlayerEntity((ClientWorld) buddy.level, profile);
+
+        return rcpe.getModelName().equals("slim");
     }
 
     @Override

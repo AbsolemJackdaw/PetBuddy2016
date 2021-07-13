@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.CowModel;
-import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
@@ -24,8 +22,6 @@ import subaraki.petbuddy.client.entity.layers.LayerPetFormBase;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class MooshroomRedForm extends CowForm {
-
-    private CowModel<PetBuddyEntity> cowModel = new CowModel<>();
 
     @Override
     public Item getFormItem()
@@ -71,13 +67,6 @@ public class MooshroomRedForm extends CowForm {
         {
 
             return MooshroomRedForm.this;
-        }
-
-        @Override
-        public EntityModel<PetBuddyEntity> getModel()
-        {
-
-            return cowModel;
         }
 
         @Override
