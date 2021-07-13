@@ -101,7 +101,7 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
         if (net.minecraftforge.client.ForgeHooksClient.isNameplateInRenderDistance(buddy, d0))
         {
             boolean flag = !buddy.isDiscrete();
-            float f = (buddy.getBbHeight() + 0.25f ) + buddy.getPetForm().getNameRenderOffset();
+            float f = (buddy.getBbHeight() + 0.25f) + buddy.getPetForm().getNameRenderOffset();
             int i = "deadmau5".equals(text.getString()) ? -10 : 0;
             matrix.pushPose();
             matrix.translate(0.0D, (double) f, 0.0D);
@@ -119,7 +119,7 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
             IFormattableTextComponent colored_text = new StringTextComponent(text.getString())
                     .setStyle(Style.EMPTY.withColor(Color.fromLegacyFormat(health_color)));
             float f2 = (float) (-fontrenderer.width(text) / 2);
-           
+
             fontrenderer.drawInBatch(colored_text, f2, (float) i, 553648127, false, matrix4f, buffer, flag, j, light);
             if (flag)
             {
@@ -155,9 +155,6 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
     @Override
     protected float getBob(PetBuddyEntity buddy, float tick)
     {
-
-        buddy.getPetForm().getBob(buddy, tick);
-
-        return 0;
+        return buddy.getPetForm().getBob(buddy, tick);
     }
 }
