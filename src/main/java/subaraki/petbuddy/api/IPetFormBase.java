@@ -1,5 +1,7 @@
 package subaraki.petbuddy.api;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
+
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.item.Item;
@@ -14,13 +16,15 @@ public interface IPetFormBase {
 
     public boolean canVisuallySwimLikePlayer();
 
-    public float heldItemOffset();
+    public void heldItemRotationAndOffset(MatrixStack stack);
 
     public String getID();
 
     public float getBob(PetBuddyEntity buddy, float tickCount);
 
     public void tick(PetBuddyEntity buddy);
+    
+    public float getNameRenderOffset();
 
     public LayerRenderer<PetBuddyEntity, PlayerModel<PetBuddyEntity>> getLayer(RenderEntityPetBuddy parent_renderer);
 

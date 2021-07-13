@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.culling.ClippingHelper;
 import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.HeadLayer;
-import net.minecraft.client.renderer.entity.layers.HeldItemLayer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.util.ResourceLocation;
@@ -26,6 +25,7 @@ import subaraki.petbuddy.api.IPetFormBase;
 import subaraki.petbuddy.api.PetForms;
 import subaraki.petbuddy.client.entity.layers.BipedArmorLayerPetBuddy;
 import subaraki.petbuddy.client.entity.layers.Deadmau5HeadLayerBuddy;
+import subaraki.petbuddy.client.entity.layers.HeldBuddyItemLayer;
 import subaraki.petbuddy.client.entity.layers.LayerRenderWithSmallArms;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
@@ -45,7 +45,7 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
         this.addLayer(new LayerRenderWithSmallArms(this));
 
         this.addLayer(new BipedArmorLayerPetBuddy(this, new BipedModel<>(0.5f), new BipedModel<>(1.0F)));
-        this.addLayer(new HeldItemLayer<>(this));
+        this.addLayer(new HeldBuddyItemLayer(this));
 
         this.addLayer(new Deadmau5HeadLayerBuddy(this));
         this.addLayer(new HeadLayer<>(this));
@@ -104,7 +104,7 @@ public class RenderEntityPetBuddy extends LivingRenderer<PetBuddyEntity, PlayerM
         if (net.minecraftforge.client.ForgeHooksClient.isNameplateInRenderDistance(buddy, d0))
         {
             boolean flag = !buddy.isDiscrete();
-            float f = buddy.getBbHeight() + 0.5F;
+            float f = (buddy.getBbHeight() + 0.25f ) + buddy.getPetForm().getNameRenderOffset();
             int i = "deadmau5".equals(text.getString()) ? -10 : 0;
             matrix.pushPose();
             matrix.translate(0.0D, (double) f, 0.0D);
