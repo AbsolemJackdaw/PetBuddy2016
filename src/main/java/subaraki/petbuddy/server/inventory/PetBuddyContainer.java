@@ -56,9 +56,9 @@ public class PetBuddyContainer extends Container {
             this.addSlot(new SlotForm(data.getPetInventory(), 2, 100, 16 + (2 * 18)));
             this.addSlot(new SlotChest(data.getPetInventory(), 3, 100 - 20, 16));
 
-            for (int x = 0; x < 4; x++)
+            for (int y = 0; y <3; y++)
             {
-                for (int y = 0; y < 3; y++)
+                for (int x = 0; x < 4; x++)
                 {
                     this.addSlot(new SlotChestContent(this, data.getPetInventory(), 4 + (x * 3 + y), 8 + (x * 18), 16 + (y * 18)));
                 }
