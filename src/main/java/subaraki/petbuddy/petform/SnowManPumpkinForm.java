@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
-import net.minecraft.client.renderer.entity.model.SnowManModel;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -19,8 +18,6 @@ import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class SnowManPumpkinForm extends SnowManForm {
-
-    private SnowManModel<PetBuddyEntity> snowmanModel = new SnowManModel<>();
 
     @Override
     public Item getFormItem()

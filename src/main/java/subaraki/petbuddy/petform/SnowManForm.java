@@ -12,13 +12,13 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 import subaraki.petbuddy.api.IPetFormBase;
+import subaraki.petbuddy.api.LayerPetFormBase;
 import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
-import subaraki.petbuddy.client.entity.layers.LayerPetFormBase;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class SnowManForm implements IPetFormBase {
 
-    private SnowManModel<PetBuddyEntity> snowmanModel = new SnowManModel<>();
+    protected SnowManModel<PetBuddyEntity> snowmanModel = new SnowManModel<>();
 
     @Override
     public float getScale()
@@ -76,11 +76,11 @@ public class SnowManForm implements IPetFormBase {
 
         return "snowgolem";
     }
-    
+
     @Override
     public EntityModel<PetBuddyEntity> getDefaultModel()
     {
-    
+
         return snowmanModel;
     }
 

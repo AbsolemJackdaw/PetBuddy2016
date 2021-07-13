@@ -12,8 +12,8 @@ import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Quaternion;
 import subaraki.petbuddy.api.IPetFormBase;
+import subaraki.petbuddy.api.LayerPetFormBase;
 import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
-import subaraki.petbuddy.client.entity.layers.LayerPetFormBase;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class PigForm implements IPetFormBase {

@@ -17,8 +17,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import subaraki.petbuddy.api.IPetFormBase;
+import subaraki.petbuddy.api.LayerPetFormBase;
 import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
-import subaraki.petbuddy.client.entity.layers.LayerPetFormBase;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
 public class MooshroomBrownForm extends CowForm {
