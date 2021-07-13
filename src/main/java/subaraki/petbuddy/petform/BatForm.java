@@ -1,10 +1,12 @@
 package subaraki.petbuddy.petform;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
@@ -48,6 +50,15 @@ public class BatForm implements IPetFormBase {
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
 
+        if(model.parts() instanceof ImmutableList)
+        {
+           
+            ModelRenderer part = ((ImmutableList<ModelRenderer>)model.parts()).get(1);
+            part.translateAndRotate(stack);
+            stack.translate(0, 0.8, -0.4);
+            stack.scale(4,4,4);
+        }
+       
     }
 
     @Override
@@ -60,12 +71,14 @@ public class BatForm implements IPetFormBase {
     @Override
     public float getBob(PetBuddyEntity buddy, float tickCount)
     {
+
         return buddy.tickCount + tickCount;
     }
 
     @Override
     public void tick(PetBuddyEntity buddy)
     {
+
     }
 
     @Override

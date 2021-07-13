@@ -49,8 +49,8 @@ public class PigForm implements IPetFormBase {
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
 
-        stack.translate(2.3, .2, 1);
-        stack.mulPose(new Quaternion(0, 0, -45f, true));
+        stack.translate(0, 0.6, 0);
+        stack.mulPose(new Quaternion(0, 45, 90f, true));
         stack.scale(2, 2, 2);
     }
 

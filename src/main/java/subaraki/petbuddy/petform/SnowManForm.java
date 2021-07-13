@@ -1,5 +1,6 @@
 package subaraki.petbuddy.petform;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -7,6 +8,7 @@ import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.EntityModel;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.client.renderer.entity.model.SnowManModel;
+import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
@@ -38,9 +40,15 @@ public class SnowManForm implements IPetFormBase {
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
 
-        stack.translate(3, -1, 0.1);
-        stack.mulPose(new Quaternion(90, 0, 0, true));
-        stack.scale(2, 2, 2);
+        if (snowmanModel.parts() instanceof ImmutableList)
+        {
+            ModelRenderer part = ((ImmutableList<ModelRenderer>) snowmanModel.parts()).get(0);
+            part.translateAndRotate(stack);
+            stack.translate(-0.4, -0.4, -0.4);
+            stack.mulPose(new Quaternion(0, 10, -30, true));
+            stack.scale(2,2,2);
+        }
+
     }
 
     @Override

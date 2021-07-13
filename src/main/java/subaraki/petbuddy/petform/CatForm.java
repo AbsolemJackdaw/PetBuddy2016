@@ -54,8 +54,8 @@ public class CatForm implements IPetFormBase, IChangeableForm {
     @Override
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
-        stack.translate(1.5, 0.2, 0);
-        stack.mulPose(new Quaternion(-45, 90, 0, true));
+        stack.translate(0, 0.8, 0);
+        stack.mulPose(new Quaternion(0, 45, 90, true));
         stack.scale(1.5f,1.5f,1.5f);
     }
 

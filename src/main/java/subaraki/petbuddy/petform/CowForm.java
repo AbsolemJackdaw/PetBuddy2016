@@ -49,8 +49,8 @@ public class CowForm implements IPetFormBase {
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
 
-        stack.translate(0.9, .1, 0.8);
-        stack.mulPose(new Quaternion(0, 0, -45f, true));
+        stack.translate(-0.4f, 0.4, 0);
+        stack.mulPose(new Quaternion(45, 0, 0, true));
         stack.scale(2, 2, 2);
     }
 

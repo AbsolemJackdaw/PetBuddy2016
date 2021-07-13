@@ -48,8 +48,10 @@ public class FoxForm implements IPetFormBase {
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
 
-        stack.translate(1.9, -.5, 0.4);
-        stack.mulPose(new Quaternion(0, 0, -45f, true));
+        model.head.translateAndRotate(stack);
+        stack.translate(0.15, 0.3, -0.5);
+        stack.mulPose(new Quaternion(0, -45, 90, true));
+        stack.scale(1.5f, 1.5f, 1.5f);
     }
 
     @Override

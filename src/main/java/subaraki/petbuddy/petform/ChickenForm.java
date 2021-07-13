@@ -56,7 +56,8 @@ public class ChickenForm implements IPetFormBase {
     public void heldItemRotationAndOffset(MatrixStack stack)
     {
 
-        stack.translate(1.7, .6, 0.4);
+        stack.translate(-0.2, 1, -0.3);
+        stack.scale(1f,1f,1f);
     }
 
     @Override

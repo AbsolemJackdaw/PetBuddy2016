@@ -55,9 +55,11 @@ public class HeldBuddyItemLayer extends LayerRenderer<PetBuddyEntity, PlayerMode
                 float scale = buddy.getPetForm().getScale();
                 
                 stack.pushPose();
+               
+                buddy.getPetForm().heldItemRotationAndOffset(stack);
                 stack.scale(scale, scale, scale);
                 stack.mulPose(new Quaternion(0, -90, 90, true));
-                buddy.getPetForm().heldItemRotationAndOffset(stack);
+                
                 Minecraft.getInstance().getItemRenderer().renderStatic(buddy, itemstack, TransformType.FIXED, false, stack, buffer, buddy.level, the_int,
                         OverlayTexture.NO_OVERLAY);
                 stack.popPose();
