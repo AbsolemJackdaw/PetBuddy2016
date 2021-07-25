@@ -260,6 +260,8 @@ public class BuddyData {
             {
                 buddy.setItemSlot(EquipmentSlotType.MAINHAND, equipment);
             }
+            
+            buddy.getInventory().setStackInSlot(slot, equipment);
         }
 
     }

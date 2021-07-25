@@ -59,10 +59,9 @@ public class CPacketSyncArmorSlots implements IPacketBase {
         if (player != null)
             BuddyData.get(player).ifPresent((data) -> {
 
-                if (slot < 2)
-                    data.setClientArmorSlot(equipment, slot, entityID);
+                data.setClientArmorSlot(equipment, slot, entityID);
 
-                //sets slot on relog / respawn
+                // sets slot on relog / respawn
                 if (slot == 2)
                     data.setPetForm(equipment);
 
