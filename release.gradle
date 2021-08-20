@@ -1,4 +1,5 @@
 artifactory {
+println "reading artifactory"
     if (project.hasProperty("artifactory_user")) {
         contextUrl = "https://petbuddy.jfrog.io/artifactory"
         publish {

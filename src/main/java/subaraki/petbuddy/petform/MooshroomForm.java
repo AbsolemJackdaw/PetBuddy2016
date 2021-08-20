@@ -2,8 +2,8 @@ package subaraki.petbuddy.petform;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockRendererDispatcher;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -12,7 +12,6 @@ import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
 import net.minecraft.item.Item;
-import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -21,20 +20,30 @@ import subaraki.petbuddy.api.LayerPetFormBase;
 import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
-public class MooshroomRedForm extends CowForm {
+public class MooshroomForm extends CowForm {
 
+    private final Item item;
+    private final String id;
+    
+    
+    public MooshroomForm(Item item, String id) {
+
+        this.item = item;
+        this.id = id;
+    }
+    
     @Override
     public Item getFormItem()
     {
 
-        return Items.RED_MUSHROOM;
+        return item;
     }
 
     @Override
     public String getID()
     {
 
-        return "mooshroom_red";
+        return id;
     }
 
     @Override
@@ -46,7 +55,7 @@ public class MooshroomRedForm extends CowForm {
 
     private class LayerCow extends LayerPetFormBase {
 
-        private final ResourceLocation RED_COW_LOCATION = new ResourceLocation("textures/entity/cow/red_mooshroom.png");
+        private final ResourceLocation RED_COW_LOCATION = new ResourceLocation("textures/entity/cow/"+ id +".png");
 
         public LayerCow(RenderEntityPetBuddy parent_renderer) {
 
@@ -66,7 +75,7 @@ public class MooshroomRedForm extends CowForm {
         public IPetFormBase getForm()
         {
 
-            return MooshroomRedForm.this;
+            return MooshroomForm.this;
         }
 
         @Override
@@ -91,13 +100,13 @@ public class MooshroomRedForm extends CowForm {
         public void render(MatrixStack stack, IRenderTypeBuffer buffer, int the_int, PetBuddyEntity buddy, float p_225628_5_, float p_225628_6_, float p_225628_7_, float p_225628_8_, float p_225628_9_, float p_225628_10_)
         {
 
-            if (!buddy.getPetForm().equals(MooshroomRedForm.this))
+            if (!buddy.getPetForm().equals(MooshroomForm.this))
                 return;
             cowModel.getHead().xRot = this.getParentModel().head.xRot;
             cowModel.getHead().yRot = this.getParentModel().head.yRot;
             cowModel.getHead().zRot = this.getParentModel().head.zRot;
             BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
-            BlockState blockstate = Blocks.RED_MUSHROOM.defaultBlockState();
+            BlockState blockstate = Block.byItem(getFormItem()).defaultBlockState();
             int i = LivingRenderer.getOverlayCoords(buddy, 0.0F);
             stack.pushPose();
             stack.translate((double) 0.2F, (double) -0.35F, 0.5D);

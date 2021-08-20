@@ -1,5 +1,7 @@
 package subaraki.petbuddy.api;
 
+import java.util.Random;
+
 import com.mojang.blaze3d.matrix.MatrixStack;
 
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -11,9 +13,10 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import subaraki.petbuddy.client.entity.RenderEntityPetBuddy;
 import subaraki.petbuddy.server.entity.PetBuddyEntity;
 
-
 @OnlyIn(Dist.CLIENT)
 public interface IPetFormBase {
+
+    public Random rand = new Random();
 
     public float getScale();
 
